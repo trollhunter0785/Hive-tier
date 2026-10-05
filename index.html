@@ -1,0 +1,1444 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" data-accent="honey">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>HiveTiers — Gameplay Rankings</title>
+<meta name="description" content="Gameplay tier rankings for Boxing, Mid Fight and Sky Combat.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#121420; --s1:#1a1d2b; --s2:#232738; --line:#2e3348; --tx:#eceef7; --mu:#8e94ab;
+  --ac:#ffbf2f; --ac-ink:#1b1400; --ok:#4cd68a; --bad:#ff6b6b;
+  --display:'Chakra Petch','Segoe UI',system-ui,sans-serif;
+  --body:'Manrope','Segoe UI',system-ui,sans-serif;
+  --row:62px;
+  --hc:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='100' viewBox='0 0 56 100'%3E%3Cpath d='M28 66L0 50L0 16L28 0L56 16L56 50L28 66L28 100' fill='none' stroke='%23ffffff' stroke-opacity='.05'/%3E%3Cpath d='M28 0L28 34L0 50L0 84L28 100L56 84L56 50L28 34' fill='none' stroke='%23ffffff' stroke-opacity='.05'/%3E%3C/svg%3E");
+}
+[data-theme=light]{
+  --bg:#eceef5; --s1:#ffffff; --s2:#f0f2f8; --line:#d8dce9; --tx:#161a2b; --mu:#5d6482;
+  --hc:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='100' viewBox='0 0 56 100'%3E%3Cpath d='M28 66L0 50L0 16L28 0L56 16L56 50L28 66L28 100' fill='none' stroke='%23000000' stroke-opacity='.06'/%3E%3Cpath d='M28 0L28 34L0 50L0 84L28 100L56 84L56 50L28 34' fill='none' stroke='%23000000' stroke-opacity='.06'/%3E%3C/svg%3E");
+}
+[data-accent=ice]{--ac:#4cc3ff;--ac-ink:#001824}
+[data-accent=ember]{--ac:#ff6b4a;--ac-ink:#240700}
+[data-accent=mint]{--ac:#3fdca0;--ac-ink:#00201a}
+body.compact{--row:48px}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--tx);font:500 15px/1.5 var(--body);min-height:100vh;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0;background:var(--hc);-webkit-mask-image:linear-gradient(#000,transparent 75%);mask-image:linear-gradient(#000,transparent 75%);pointer-events:none;z-index:0}
+a{color:inherit;text-decoration:none}
+button,input,select,textarea{font:inherit;color:inherit}
+h1,h2,h3{font-family:var(--display);margin:0;letter-spacing:.2px}
+:focus-visible{outline:2px solid var(--ac);outline-offset:2px;border-radius:6px}
+[hidden]{display:none!important}
+
+/* top bar */
+.top{position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:18px;padding:10px clamp(14px,3vw,32px);background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.logo{display:flex;align-items:center;gap:10px;font:700 20px/1 var(--display)}
+.logo i{width:30px;height:34.6px;background:var(--ac);clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);display:grid;place-items:center;font-style:normal;color:var(--ac-ink);font-size:15px}
+nav.main{display:flex;gap:4px;margin-left:8px}
+nav.main a{padding:8px 14px;border-radius:10px;color:var(--mu);font-weight:600}
+nav.main a:hover{color:var(--tx);background:var(--s2)}
+nav.main a.on{color:var(--tx);background:var(--s2)}
+.top .search{margin-left:auto;width:min(340px,38vw)}
+body[data-route=home] .top .search{display:none}
+body[data-route=home] .top .pbtn{margin-left:auto}
+.pbtn{display:flex;align-items:center;gap:10px;padding:5px 12px 5px 5px;border-radius:999px;background:var(--s1);border:1px solid var(--line);cursor:pointer;font-weight:600}
+.pbtn:hover{border-color:var(--ac)}
+.pbtn .who{max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pbtn.guest{padding:9px 14px}
+
+main{position:relative;z-index:1;max-width:1040px;margin:0 auto;padding:28px clamp(14px,3vw,32px) 90px}
+footer{position:relative;z-index:1;text-align:center;color:var(--mu);font-size:13px;padding:0 16px 40px}
+footer a{text-decoration:underline;cursor:pointer}
+
+/* generic */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 22px;border-radius:12px;border:1px solid var(--line);background:var(--s1);font-weight:700;cursor:pointer;transition:transform .12s,border-color .12s,background .12s}
+.btn:hover{border-color:var(--ac)}
+.btn:active{transform:scale(.98)}
+.btn.primary{background:var(--ac);border-color:var(--ac);color:var(--ac-ink)}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn.sm{padding:8px 14px;font-size:14px;border-radius:10px}
+.btn.danger{color:var(--bad)}
+.card{background:var(--s1);border:1px solid var(--line);border-radius:16px;padding:20px}
+.muted{color:var(--mu)}
+.chip-tag{display:inline-block;padding:2px 9px;border-radius:999px;background:var(--s2);border:1px solid var(--line);font-size:12px;font-weight:700;color:var(--mu)}
+.empty{text-align:center;padding:48px 16px;color:var(--mu)}
+.empty b{display:block;color:var(--tx);font:600 18px var(--display);margin-bottom:6px}
+
+/* hex badge */
+.hex{display:inline-grid;place-items:center;flex:none;width:var(--w,48px);aspect-ratio:1/1.1547;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);font:700 calc(var(--w,48px)*.3)/1 var(--display);background:var(--c);color:#17131f}
+.hex.lt{background:color-mix(in srgb,var(--c) 30%,var(--s2));color:var(--tx)}
+.hex.none{background:var(--s2);color:var(--mu);font-weight:500}
+.t1{--c:#ffc933}.t2{--c:#ff8a3d}.t3{--c:#ef5d86}.t4{--c:#a183ff}.t5{--c:#57b6ff}
+
+/* avatar */
+.av{width:var(--s);height:var(--s);border-radius:26%;position:relative;overflow:hidden;background:linear-gradient(135deg,var(--ac),#8a5cff);display:grid;place-items:center;flex:none}
+.av b{color:#14101a;font:700 calc(var(--s)*.46)/1 var(--display)}
+.av img{position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated;background:var(--s2)}
+
+/* search */
+.search{position:relative;display:flex;align-items:center;gap:10px;background:var(--s1);border:1px solid var(--line);border-radius:14px;padding:0 14px;transition:border-color .15s,box-shadow .15s}
+.search:focus-within{border-color:var(--ac);box-shadow:0 0 0 4px color-mix(in srgb,var(--ac) 18%,transparent)}
+.search svg{width:18px;height:18px;flex:none;color:var(--mu)}
+.search input{flex:1;min-width:0;background:none;border:0;outline:0;padding:11px 0}
+.search input::-webkit-search-cancel-button{display:none}
+.search kbd{font:600 12px var(--body);color:var(--mu);border:1px solid var(--line);border-radius:6px;padding:1px 7px}
+.search.big{border-radius:18px;padding:0 20px}
+.search.big input{padding:19px 0;font-size:18px}
+.search.big svg{width:22px;height:22px}
+.sugg{position:absolute;left:0;right:0;top:calc(100% + 8px);background:var(--s1);border:1px solid var(--line);border-radius:14px;padding:6px;box-shadow:0 18px 40px #0006;z-index:50}
+.sugg a,.sugg p{display:flex;align-items:center;gap:12px;padding:8px 10px;border-radius:10px;margin:0}
+.sugg a:hover,.sugg a.act{background:var(--s2)}
+.sugg a span.n{flex:1;font-weight:700}
+.sugg p{color:var(--mu)}
+
+/* home */
+.hero{max-width:720px;margin:clamp(8px,4vh,40px) auto 44px;text-align:center}
+.hero h1{font-size:clamp(26px,5vw,38px);margin-bottom:18px;line-height:1.15}
+.hero .search{text-align:left}
+.cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:22px}
+.cta .btn{min-width:180px;padding:15px 24px;font-size:16px}
+.stats{margin-top:18px;color:var(--mu);font-size:14px}
+.grid4{display:grid;grid-template-columns:repeat(auto-fit,minmax(235px,1fr));gap:14px}
+.champ{padding:18px}
+.champ header{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.champ header .ic{width:36px;height:36px;display:grid;place-items:center;font-size:18px;background:var(--s2);border-radius:10px}
+.champ h3{font-size:18px}
+.champ ol{list-style:none;margin:0 0 12px;padding:0;display:grid;gap:4px}
+.champ li a{display:flex;align-items:center;gap:10px;padding:7px 8px;border-radius:10px}
+.champ li a:hover{background:var(--s2)}
+.champ .pos{width:18px;font:700 15px var(--display);color:var(--mu);text-align:center}
+.champ li:first-child .pos{color:var(--ac)}
+.champ .nm{flex:1;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.champ .pt{font:700 14px var(--display);color:var(--mu)}
+.champ .more{font-size:14px;font-weight:700;color:var(--ac);cursor:pointer;background:none;border:0;padding:4px 0}
+.champ .more:hover{text-decoration:underline}
+body:not(.nomotion) .champ{animation:rise .5s cubic-bezier(.2,.8,.2,1) both}
+body:not(.nomotion) .champ:nth-child(2){animation-delay:.07s}
+body:not(.nomotion) .champ:nth-child(3){animation-delay:.14s}
+body:not(.nomotion) .champ:nth-child(4){animation-delay:.21s}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+/* page head + controls */
+.ph{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:18px}
+.ph h1{font-size:30px}
+.ph p{margin:4px 0 0;color:var(--mu)}
+.bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.seg{display:inline-flex;background:var(--s1);border:1px solid var(--line);border-radius:12px;padding:3px;gap:2px;flex-wrap:wrap}
+.seg button{border:0;background:none;padding:8px 14px;border-radius:9px;font-weight:700;color:var(--mu);cursor:pointer}
+.seg button:hover{color:var(--tx)}
+.seg button.on{background:var(--ac);color:var(--ac-ink)}
+.sel{background:var(--s1);border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-weight:600}
+.bar .spacer{flex:1}
+.bar .search{min-width:200px}
+
+/* leaderboard rows */
+.list{display:grid;gap:6px}
+.row{display:flex;align-items:center;gap:14px;min-height:var(--row);padding:6px 16px 6px 12px;background:var(--s1);border:1px solid var(--line);border-radius:14px;transition:border-color .12s,transform .12s}
+.row:hover{border-color:var(--ac);transform:translateX(2px)}
+.row .rk{width:42px;font:700 18px var(--display);color:var(--mu);text-align:center}
+.row[data-rk="1"] .rk{color:#ffc933}.row[data-rk="2"] .rk{color:#cfd6e6}.row[data-rk="3"] .rk{color:#e09a68}
+.row[data-rk="1"]{border-left:3px solid #ffc933}.row[data-rk="2"]{border-left:3px solid #cfd6e6}.row[data-rk="3"]{border-left:3px solid #e09a68}
+.row .nm{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.25}
+.row .nm b{font-size:16px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row .nm small{color:var(--mu);font-size:12.5px}
+.row .rg{width:36px;text-align:center}
+.row .bds{display:flex;gap:6px}
+.row .pt{min-width:68px;text-align:right;font:700 16px var(--display)}
+.row .pt small{display:block;font:500 11px var(--body);color:var(--mu)}
+body.compact .hex{--w:38px!important}
+body.compact .av{--s:30px!important}
+
+/* tier columns */
+.cols{display:grid;grid-template-columns:repeat(5,minmax(176px,1fr));gap:12px;overflow-x:auto;padding-bottom:8px}
+.col{background:var(--s1);border:1px solid var(--line);border-top:3px solid var(--c);border-radius:14px;padding:14px}
+.col h3{font-size:17px;margin-bottom:8px;color:var(--c)}
+.col .sub{display:flex;justify-content:space-between;align-items:center;margin:12px 0 6px;font:700 13px var(--display);color:var(--mu)}
+.col .sub em{font:500 12px var(--body)}
+.chip{display:flex;align-items:center;gap:8px;padding:5px 6px;border-radius:9px;font-weight:600}
+.chip:hover{background:var(--s2)}
+.chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.none{color:var(--mu);font-size:13px;margin:4px 6px}
+
+/* player */
+.phead{display:flex;gap:22px;align-items:center;flex-wrap:wrap}
+.phead h1{font-size:34px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.phead .meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.phead .big{margin-left:auto;text-align:right}
+.phead .big b{display:block;font:700 40px/1 var(--display);color:var(--ac)}
+.phead .big span{color:var(--mu);font-size:13px}
+.modes{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin:18px 0}
+.mcard{display:flex;align-items:center;gap:16px}
+.mcard h3{font-size:17px}
+.mcard .sm{color:var(--mu);font-size:13.5px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.hist{list-style:none;margin:12px 0 0;padding:0;display:grid;gap:2px}
+.hist li{display:flex;align-items:center;gap:12px;padding:8px 4px;border-bottom:1px dashed var(--line)}
+.hist li:last-child{border:0}
+.hist time{margin-left:auto;color:var(--mu);font-size:13px;white-space:nowrap}
+.cmp{width:100%;border-collapse:collapse;margin-top:14px;text-align:center}
+.cmp th,.cmp td{padding:10px 8px;border-bottom:1px solid var(--line)}
+.cmp th:first-child,.cmp td:first-child{text-align:left;color:var(--mu);font-weight:600}
+.cmp td.win{color:var(--ok);font-weight:800}
+.verdict{margin:12px 0 0;font-weight:700}
+
+/* apply */
+.form{display:grid;gap:14px}
+.f label.l{display:block;font-weight:700;margin-bottom:6px;font-size:14px}
+.f input[type=text],.f input[type=url],.f select,.f textarea{width:100%;background:var(--s2);border:1px solid var(--line);border-radius:10px;padding:11px 12px;outline:0}
+.f input:focus,.f select:focus,.f textarea:focus{border-color:var(--ac)}
+.f textarea{min-height:90px;resize:vertical}
+.f .hint{font-size:12.5px;color:var(--mu);margin-top:4px}
+.f2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.mp{display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--s2);border:1px solid var(--line);border-radius:12px}
+.mp label{flex:1;display:flex;align-items:center;gap:10px;font-weight:700;cursor:pointer}
+.mp select{width:130px!important;padding:8px 10px!important}
+.err{color:var(--bad);font-size:13.5px;font-weight:600;min-height:20px}
+.apps{display:grid;gap:10px;margin-top:12px}
+.app{display:flex;gap:12px;align-items:center;padding:12px;background:var(--s2);border-radius:12px}
+.app .info{flex:1;min-width:0}
+.app .info b{display:block}
+.app .info small{color:var(--mu)}
+.status{padding:3px 10px;border-radius:999px;font-size:12px;font-weight:800;background:color-mix(in srgb,var(--ac) 22%,transparent);color:var(--ac)}
+.steps{margin:12px 0 0;padding-left:20px;display:grid;gap:10px;color:var(--mu)}
+.steps b{color:var(--tx)}
+.side{display:grid;gap:14px;align-content:start}
+.layout2{display:grid;grid-template-columns:1.25fr 1fr;gap:16px;align-items:start}
+
+/* drawer */
+.scrim{position:fixed;inset:0;background:#000a;opacity:0;pointer-events:none;transition:opacity .2s;z-index:55}
+.scrim.open{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;height:100%;width:min(400px,100%);background:var(--s1);border-left:1px solid var(--line);z-index:60;transform:translateX(105%);transition:transform .25s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column}
+.drawer.open{transform:none}
+.dh{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--line)}
+.dh .seg{flex:1;margin-right:10px}
+.dh .seg button{flex:1}
+.x{border:0;background:var(--s2);width:36px;height:36px;border-radius:10px;cursor:pointer;font-size:18px;line-height:1}
+.db{padding:18px;overflow:auto;flex:1;display:grid;gap:16px;align-content:start}
+.me{display:flex;align-items:center;gap:14px}
+.me h2{font-size:22px}
+.minis{display:grid;gap:8px}
+.mini{display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--s2);border-radius:12px}
+.mini span{flex:1;font-weight:700}
+.mini small{color:var(--mu);font-weight:600}
+.srow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:6px 0}
+.srow b{display:block}
+.srow small{color:var(--mu)}
+.sw{position:relative;width:46px;height:26px;flex:none}
+.sw input{position:absolute;inset:0;opacity:0;cursor:pointer;margin:0}
+.sw span{position:absolute;inset:0;border-radius:999px;background:var(--line);transition:background .15s}
+.sw span::after{content:"";position:absolute;left:3px;top:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:transform .15s}
+.sw input:checked+span{background:var(--ac)}
+.sw input:checked+span::after{transform:translateX(20px)}
+.sw input:focus-visible+span{outline:2px solid var(--ac);outline-offset:2px}
+.swatches{display:flex;gap:10px}
+.swatches button{width:34px;height:34px;border-radius:50%;border:3px solid transparent;cursor:pointer;background:var(--c)}
+.swatches button.on{border-color:var(--tx)}
+.hr{height:1px;background:var(--line);border:0;margin:2px 0}
+
+/* legend dialog + toasts */
+dialog{background:var(--s1);color:var(--tx);border:1px solid var(--line);border-radius:18px;padding:22px;width:min(520px,92vw)}
+dialog::backdrop{background:#000b}
+dialog table{width:100%;border-collapse:collapse;margin:12px 0}
+dialog td,dialog th{padding:7px 6px;text-align:left;border-bottom:1px solid var(--line)}
+#toasts{position:fixed;left:50%;bottom:84px;transform:translateX(-50%);display:grid;gap:8px;z-index:90;width:min(420px,92vw)}
+.toast{background:var(--tx);color:var(--bg);padding:11px 16px;border-radius:12px;font-weight:700;box-shadow:0 12px 30px #0005;animation:rise .25s both}
+
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
+body.nomotion *{animation:none!important;transition:none!important}
+
+/* ---- firebase version additions ---- */
+.dot{background:var(--bad);color:#fff;border-radius:999px;font:700 11px var(--display);padding:1px 7px}
+.skinbox{display:grid;justify-items:center;gap:6px}
+.skinbox canvas{background:var(--s2);border-radius:14px;cursor:grab;max-width:100%}
+.pinfo{flex:1;min-width:200px}
+.prev{display:grid;justify-items:center;margin:10px 0}
+.prev canvas{background:var(--s2);border-radius:12px;cursor:grab}
+.acts{display:flex;gap:8px;flex-wrap:wrap}
+.app{flex-wrap:wrap}
+.app .info small{display:block}
+.status.accepted,.status.completed{background:color-mix(in srgb,var(--ok) 22%,transparent);color:var(--ok)}
+.status.rejected,.status.declined,.status.cancelled,.status.disputed{background:color-mix(in srgb,var(--bad) 22%,transparent);color:var(--bad)}
+.status{text-transform:capitalize}
+.btn[disabled]{opacity:.6;pointer-events:none}
+.f input[disabled]{opacity:.7}
+.nav-badge{margin-left:6px}
+
+/* ================= v3: layouts, gate, onboarding, challenge ================= */
+.top .grow{flex:1}
+.top .search{margin-left:0}
+body[data-route=home] .top .pbtn{margin-left:0}
+.iconbtn{width:42px;height:42px;display:grid;place-items:center;flex:none;border-radius:12px;border:1px solid var(--line);background:var(--s1);cursor:pointer;color:var(--tx)}
+.iconbtn:hover{border-color:var(--ac)}
+.tabbar{display:none}
+.l{display:block;font-weight:700;margin-bottom:6px;font-size:14px}
+.field{width:100%;background:var(--s2);border:1px solid var(--line);border-radius:12px;padding:12px 14px;outline:0}
+.field:focus{border-color:var(--ac);box-shadow:0 0 0 3px color-mix(in srgb,var(--ac) 18%,transparent)}
+textarea.field{resize:vertical;min-height:84px}
+.hint{font-size:12.5px;color:var(--mu);margin-top:5px}
+.mp select{background:var(--s2);border:1px solid var(--line);border-radius:10px;padding:8px 10px;width:130px}
+.note{background:color-mix(in srgb,var(--ac) 14%,transparent);border:1px solid color-mix(in srgb,var(--ac) 40%,transparent);border-radius:12px;padding:12px 14px}
+.picks{display:grid;gap:8px}
+.pick{display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--s2);border:1px solid var(--line);border-radius:12px;cursor:pointer;flex-wrap:wrap}
+.pick.on{border-color:var(--ac);background:color-mix(in srgb,var(--ac) 10%,var(--s2))}
+.pick input{width:18px;height:18px;accent-color:var(--ac)}
+.pick .pn{font-weight:700;flex:1;min-width:110px}
+.pick .pr{display:flex;align-items:center;gap:6px}
+.pick .pr small{color:var(--mu);font-size:11px;font-weight:600}
+.pickrows{display:grid;gap:2px;margin-top:8px;background:var(--s2);border:1px solid var(--line);border-radius:12px;padding:6px}
+.pickrow{display:flex;align-items:center;gap:10px;padding:8px;border-radius:9px;border:0;background:none;text-align:left;cursor:pointer;width:100%}
+.pickrow:hover{background:var(--s1)}
+.pickrow .n{flex:1;font-weight:700}
+.oppcard{display:flex;align-items:center;gap:12px;margin-top:10px;padding:12px;background:var(--s2);border:1px solid var(--ac);border-radius:12px}
+.tabbar .tdot{position:absolute;top:0;right:calc(50% - 26px)}
+.tabbar a[data-count]:not([data-count="0"])::after{content:attr(data-count);position:absolute;top:0;right:calc(50% - 26px);background:var(--bad);color:#fff;border-radius:999px;font:700 11px var(--display);padding:0 6px}
+
+/* overlays */
+body.locked{overflow:hidden}
+.overlay{position:fixed;inset:0;z-index:80;background:var(--bg);overflow:auto;display:grid;place-items:center;padding:24px 16px}
+.overlay::before{content:"";position:fixed;inset:0;background:var(--hc);pointer-events:none;-webkit-mask-image:radial-gradient(circle at 50% 35%,#000,transparent 72%);mask-image:radial-gradient(circle at 50% 35%,#000,transparent 72%)}
+.gate-card{position:relative;width:min(420px,100%);background:var(--s1);border:1px solid var(--line);border-radius:22px;padding:30px 26px;display:grid;gap:14px}
+.gate-card .logo{justify-content:center;font-size:24px}
+.gate-card h1{font-size:28px;text-align:center}
+.gate-card .sub,.ob-head .sub{text-align:center;color:var(--mu);margin:-6px 0 2px}
+.gform{display:grid;gap:10px}
+.or{display:flex;align-items:center;gap:12px;color:var(--mu);font-size:13px}
+.or::before,.or::after{content:"";flex:1;height:1px;background:var(--line)}
+.gbtn{width:100%;background:#fff;color:#1f1f1f;border-color:#fff}
+.gbtn:hover{border-color:var(--ac)}
+.link{background:none;border:0;color:var(--ac);font-weight:700;cursor:pointer;padding:2px 4px;font-size:inherit}
+.link:hover{text-decoration:underline}
+.swap{text-align:center;margin:0;color:var(--mu)}
+.skip{justify-self:center;color:var(--mu);font-weight:600;font-size:14px}
+.ob{position:relative;width:min(880px,100%);background:var(--s1);border:1px solid var(--line);border-radius:22px;padding:28px 26px;display:grid;gap:18px}
+.ob-head{display:grid;gap:10px;justify-items:center}
+.ob-head .logo{font-size:22px}
+.ob-head h1{font-size:28px;text-align:center}
+.ob-grid{display:grid;grid-template-columns:270px 1fr;gap:22px;align-items:start}
+.ob-skin{display:grid;gap:10px;justify-items:center;text-align:center}
+.ob-fields{display:grid;gap:14px}
+.prev{display:grid;justify-items:center;margin:4px 0}
+
+.oc{display:grid;gap:6px;margin-top:4px}
+.oc-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.oc-m{display:inline-flex;align-items:center;gap:3px}
+.hex.gHT{--c:#ffc933}
+.hex.gMT{--c:#6fb4ff}
+.hex.gLT{--c:#e0956a}
+.col.gHT{--c:#ffc933}
+.col.gMT{--c:#6fb4ff}
+.col.gLT{--c:#e0956a}
+.cols.cols3{grid-template-columns:repeat(3,minmax(210px,1fr))}
+.status.done{background:color-mix(in srgb,var(--ok) 22%,transparent);color:var(--ok)}
+/* ===== tablet ===== */
+@media (max-width:900px){
+  .layout2,.two{grid-template-columns:1fr}
+  .phead .big{margin-left:0;text-align:left}
+  .ob-grid{grid-template-columns:1fr}
+}
+/* ===== mobile layout: bottom tab bar, stacked rows ===== */
+@media (max-width:760px){
+  nav.main{display:none}
+  .top{gap:10px;padding:8px 12px}
+  .top .grow{display:none}
+  .top .search{flex:1;width:auto}
+  .logo span{display:none}
+  .pbtn .who{display:none}
+  .pbtn:not(.guest){padding:3px}
+  .top .iconbtn{width:40px;height:40px}
+  main{padding:18px 14px 108px}
+  .tabbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:45;background:color-mix(in srgb,var(--s1) 94%,transparent);backdrop-filter:blur(12px);border-top:1px solid var(--line);padding:6px 6px calc(6px + env(safe-area-inset-bottom))}
+  .tabbar a,.tabbar button{flex:1;position:relative;display:grid;justify-items:center;gap:1px;padding:6px 2px;border:0;background:none;border-radius:10px;color:var(--mu);font:600 11px var(--body);cursor:pointer}
+  .tabbar .ti{font-size:20px;line-height:1.2;display:grid;place-items:center;min-height:26px}
+  .tabbar a.on,.tabbar button.on{color:var(--ac)}
+  .row{display:grid;grid-template-columns:34px 40px 1fr auto;grid-template-areas:"rk av nm pt" ". bds bds bds";gap:4px 10px;padding:10px 12px;align-items:center}
+  .row.one{grid-template-columns:34px 40px 1fr auto auto;grid-template-areas:"rk av nm bds pt"}
+  .row .rk{grid-area:rk;width:auto}
+  .row .av{grid-area:av}
+  .row .nm{grid-area:nm}
+  .row .bds{grid-area:bds}
+  .row .pt{grid-area:pt}
+  .row:hover{transform:none}
+  .phead{flex-direction:column;align-items:flex-start}
+  .phead .skinbox{align-self:center}
+  .cta .btn{flex:1;min-width:0}
+  .ph h1{font-size:26px}
+  .f2{grid-template-columns:1fr}
+  .grid4,.modes{grid-template-columns:1fr}
+  .cols{grid-template-columns:repeat(5,200px)}
+  #toasts{bottom:98px}
+  .overlay{place-items:start center;padding:16px 12px}
+  .gate-card,.ob{padding:22px 18px}
+  .bar .search{min-width:0;flex:1 1 100%}
+}
+/* ===== phone in Chrome "desktop site" mode: desktop layout, bigger touch targets ===== */
+@media (pointer:coarse) and (min-width:761px){
+  body{font-size:17px}
+  .btn{min-height:48px}
+  nav.main a{padding:12px 16px}
+  .iconbtn{width:48px;height:48px}
+  .pbtn{padding:6px 16px 6px 6px}
+  .row{min-height:74px}
+  .seg button{padding:12px 18px}
+  .field,.sel{padding:14px 16px}
+}
+
+</style>
+</head>
+<body data-route="home">
+
+<header class="top">
+  <a class="logo" href="#/" aria-label="HiveTiers home"><i>H</i><span>HiveTiers</span></a>
+  <nav class="main" aria-label="Main">
+    <a href="#/" data-nav="home">Home</a>
+    <a href="#/leaderboard" data-nav="leaderboard">Leaderboard</a>
+    <a href="#/challenge" data-nav="challenge">Challenge</a>
+    <a href="#/tiertest" data-nav="tiertest">Tier Test</a>
+  </nav>
+  <span class="grow"></span>
+  <div id="topsearch" style="display:contents"></div>
+  <button class="iconbtn" data-act="open-settings" aria-label="Settings"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg></button>
+  <button class="pbtn guest" id="pbtn" data-act="open-me" aria-label="Profile">Log in</button>
+</header>
+
+<main id="app"></main>
+<footer>Unofficial community project, not affiliated with The Hive. · <a data-act="legend">How tiers work</a></footer>
+
+<nav class="tabbar" aria-label="Main">
+  <a href="#/" data-nav="home"><span class="ti">🏠</span>Home</a>
+  <a href="#/leaderboard" data-nav="leaderboard"><span class="ti">🏆</span>Ranks</a>
+  <a href="#/challenge" data-nav="challenge" id="tab-challenge" data-count="0"><span class="ti">⚔️</span>Challenge</a>
+  <a href="#/tiertest" data-nav="tiertest"><span class="ti">🎯</span>Test</a>
+  <button id="tab-me" data-nav="profile" data-act="open-me"><span class="ti">👤</span>Log in</button>
+</nav>
+
+<div class="overlay" id="overlay" hidden></div>
+<div class="scrim" id="scrim" data-act="close-drawer"></div>
+<aside class="drawer" id="drawer" aria-label="Settings" inert>
+  <div class="dh"><h2 style="font-size:20px">Settings</h2><button class="x" data-act="close-drawer" aria-label="Close">×</button></div>
+  <div class="db" id="dbody"></div>
+</aside>
+
+<dialog id="legend"></dialog>
+<dialog id="dlg"></dialog>
+<div id="toasts" aria-live="polite"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/skinview3d@3.1.0/bundles/skinview3d.bundle.js"></script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import { getAuth, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword,
+         createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+import { getFirestore, collection, doc, getDoc, getDocs, setDoc, addDoc, updateDoc,
+         query, where, writeBatch, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+
+/* ====================================================================
+   SETTINGS YOU CAN EDIT
+   ==================================================================== */
+// Paste your Discord webhook URL between the quotes. Leave it as-is to turn Discord messages off.
+// WARNING: this file is public on GitHub, so anyone can read the link. Keep the webhook on a private channel.
+const DISCORD_WEBHOOK = 'PASTE_YOUR_NEW_WEBHOOK_URL_HERE';
+// Optional: a Discord role ID (for example your "Tester" role) to ping on every new challenge. Leave '' for no ping.
+const REFEREE_ROLE_ID = '';
+
+/* ============ FIREBASE ============ */
+const firebaseConfig = {
+  apiKey: "AIzaSyDk8MafiRLCGoOz84k6Y11wHmEbd_4jiVk",
+  authDomain: "hive-tier.firebaseapp.com",
+  projectId: "hive-tier",
+  storageBucket: "hive-tier.firebasestorage.app",
+  messagingSenderId: "268227785809",
+  appId: "1:268227785809:web:7628cec5f6a1f71c2ab470"
+};
+const fbApp = initializeApp(firebaseConfig);
+const auth = getAuth(fbApp);
+const db = getFirestore(fbApp);
+
+/* ============ CONFIG ============ */
+// High tier (HT) is the top, then Mid tier (MT), then Low tier (LT). Number 1 is the best inside each group.
+const TIERS = ['HT','MT','LT'].flatMap(g => [1,2,3,4,5].map(n => g+n));
+const PTS = {HT1:60,HT2:48,HT3:36,HT4:28,HT5:20,MT1:16,MT2:13,MT3:10,MT4:8,MT5:6,LT1:5,LT2:4,LT3:3,LT4:2,LT5:1};
+// The database stores tiers as text like "HT3". Old numbers (the previous 10-step scale) are converted by position.
+const tierIdx = v => {
+  if (v==null || v==='') return null;
+  if (typeof v==='string'){ const i = TIERS.indexOf(v.trim().toUpperCase()); return i<0 ? null : i; }
+  if (typeof v==='number') return (v>=0 && v<=9) ? Math.round(v*14/9) : null;
+  return null;
+};
+const MODES = [
+  {id:'boxing',   name:'Boxing',     icon:'🥊'},
+  {id:'midfight', name:'Mid Fight',  icon:'⚔️'},
+  {id:'sky',      name:'Sky Combat', icon:'☁️'}
+];
+const REGIONS = ['NA','EU','AS','SA','OC','AF'];
+const TITLES = [[150,'Combat Master'],[100,'Combat Ace'],[60,'Combat Specialist'],[30,'Combat Cadet'],[10,'Combat Novice'],[1,'Rookie']];
+const FAKE_DOMAIN = 'hive-tier.local';
+const STEVE_SKIN = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAABkklEQVR4nO2avUoDQRSF78hW1jZCin0DxR8wKoiNhQTLFKliL6QIBAIphTRaSF7AahFLEQtLIbFQFsEH0EKw2XfQLqjBuRtm16Pe81UhM7t7cnLmh53rRGF3KX7ztTe317zX14/PnPYMJDNoAWhoAFoAGhqAFoCGBqAFoHHaOl82V+kzdJ9gPgFRr1HzdjhMLuW7Pr62j31+M+YToBrQa9Sk2h5IJ4nH33WSWKrtgfrv/wXc6Ogg9yT48pqJiEhlfi73A7QhgJ4Eo7wdL67vxp/TxyfZ21ktRdBPk9uA//KDvzIRv8WVvndIPNx3/ZHtn4TtK7qtqe5/nt1+ap72/QNXAbQANOYNcBtbp0Fjdrg/W5SWcmjWvXOC+QTQALQANLk3QihG2U3Q9etKu/kE0AC0ADQ0AC0ATbS8kAbdYCibBUnBYD4BhBBCCCGEEEIIsUfh5SlF1xeEnv9rmH8jRAPQAtAEjyd4fYFy/q9hPgE0AC0ADbw+oOzzfw3zCaABaAFoaABaAJrgVSC0vgCN+QS8A7s6UKgJlSM8AAAAAElFTkSuQmCC';
+const STEVE_HEAD = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAdElEQVR4nGP0MlL4z4AHMOGTZGBgYGBhYGBgqInywSrZsmwLYRMYjvXk/P////9/G6Oe/8d6cv4f68n5b2PU8///////j/Xk/Gc81pMDd+ST528YGBgYGGQkRVDdwMDAwLBp12m44LnL9xn83ExRFcAE0AEALtQnknbTjlMAAAAASUVORK5CYII=';
+
+/* ============ STATE ============ */
+const lsGet = (k,d) => { try{ const v=localStorage.getItem(k); return v==null?d:JSON.parse(v); }catch(e){ return d; } };
+const lsSet = (k,v) => { try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} };
+let S = Object.assign({theme:'dark',accent:'honey',skins:true,compact:false,motion:true}, lsGet('hts_settings',{}));
+let authReady = false, authUser = null, profile = null, priv = null, role = null;
+let guest = !!lsGet('hts_guest', false);
+let gateMode = 'login', PENDING_NAME = '';
+let loading = true, loadError = null, lastLoad = 0;
+let PLAYERS = [], RK = {}, HEADS = {};
+let CH = [], TT = [], PENDING_SKIN = null;
+const SKINS = {};
+let VIEWER = null, PREV = null, TOKEN = 0;
+let CHTAB = 'new', CHF = {opp:null, modes:[]};
+
+/* ============ HELPERS ============ */
+const $ = (s, el=document) => el.querySelector(s);
+const $$ = (s, el=document) => [...el.querySelectorAll(s)];
+const esc = s => String(s==null?'':s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const enc = encodeURIComponent;
+const fmtDate = ts => new Date(ts).toLocaleDateString(undefined,{day:'numeric',month:'short',year:'numeric'});
+const fmtDT = ts => new Date(ts).toLocaleString(undefined,{weekday:'short',day:'numeric',month:'short',hour:'numeric',minute:'2-digit'});
+const localDT = ts => new Date(ts - new Date().getTimezoneOffset()*60000).toISOString().slice(0,16);
+const modeName = id => (MODES.find(m => m.id===id)||{name:id}).name;
+const modeIcon = id => (MODES.find(m => m.id===id)||{icon:''}).icon;
+const safeImg = s => (typeof s==='string' && /^data:image\/png;base64,[A-Za-z0-9+\/=]+$/.test(s)) ? s : '';
+const safeUrl = s => /^https?:\/\//i.test(s||'') ? s : '';
+const hostOf = u => { try{ const x = new URL(u); return x.protocol==='https:' ? x.hostname.replace(/^www\./,'') : ''; }catch(e){ return ''; } };
+const validYT = u => ['youtube.com','m.youtube.com','youtu.be'].includes(hostOf(u));
+const validDC = u => ['discord.gg','discord.com'].includes(hostOf(u));
+const NAME_RE = /^[A-Za-z0-9_]{3,16}$/;
+const fakeEmail = u => u.toLowerCase()+'@'+FAKE_DOMAIN;
+const pts = i => i==null ? 0 : PTS[TIERS[i]];
+const total = p => MODES.reduce((a,m) => a + pts(p.tiers[m.id]), 0);
+const titleOf = p => { const t = total(p); for (const [min,n] of TITLES) if (t>=min) return n; return 'Unranked'; };
+const bestTier = p => { const v = MODES.map(m => p.tiers[m.id]).filter(x => x!=null); return v.length ? Math.min(...v) : null; };
+const findPlayer = n => PLAYERS.find(p => p.name.toLowerCase() === String(n||'').trim().toLowerCase());
+const myPlayer = () => profile ? PLAYERS.find(p => p.uid===authUser.uid) : null;
+const rankOf = (p,k) => RK[k] ? RK[k].indexOf(p)+1 : 0;
+const tierName = i => i==null ? 'Unranked' : TIERS[i];
+
+function errMsg(e){
+  const c = (e && e.code) || '';
+  const map = {
+    'auth/invalid-credential':'Wrong username or password.',
+    'auth/wrong-password':'Wrong username or password.',
+    'auth/user-not-found':'Wrong username or password.',
+    'auth/invalid-email':'That username is not valid.',
+    'auth/email-already-in-use':'That username is already taken.',
+    'auth/weak-password':'Password must be at least 6 characters.',
+    'auth/unauthorized-domain':'This website is not authorised yet. Add it in Firebase: Authentication, Settings, Authorized domains.',
+    'auth/operation-not-allowed':'This login method is not enabled in the Firebase console.',
+    'auth/too-many-requests':'Too many tries. Wait a minute and try again.',
+    'auth/network-request-failed':'Network problem. Check your connection.',
+    'permission-denied':'The database refused this. Make sure the latest firestore.rules is published.'
+  };
+  if (c==='auth/popup-closed-by-user' || c==='auth/cancelled-popup-request') return '';
+  return map[c] || (e && e.message) || 'Something went wrong.';
+}
+function toast(msg){
+  if (!msg) return;
+  const t = document.createElement('div'); t.className='toast'; t.textContent=msg;
+  $('#toasts').appendChild(t); setTimeout(() => t.remove(), 3800);
+}
+async function guard(fn){ try{ return await fn(); }catch(e){ console.error(e); toast(errMsg(e)); } }
+
+function badge(i, w){
+  w = w || 48;
+  if (i==null) return `<span class="hex none" style="--w:${w}px" title="Unranked">–</span>`;
+  return `<span class="hex g${TIERS[i].slice(0,2)}" style="--w:${w}px" title="${TIERS[i]} · ${pts(i)} pts">${TIERS[i]}</span>`;
+}
+function avatar(name, s){
+  s = s || 40;
+  const ch = esc((String(name)[0]||'?').toUpperCase());
+  const h = S.skins ? (HEADS[String(name).toLowerCase()] || STEVE_HEAD) : '';
+  return `<span class="av" style="--s:${s}px"><b>${ch}</b>${h?`<img alt="" src="${h}">`:''}</span>`;
+}
+const searchIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>';
+function searchBox(id, big){
+  return `<div class="search ${big?'big':''}" data-search>${searchIcon}<input id="${id}" type="search" autocomplete="off" spellcheck="false" placeholder="Search a player…" aria-label="Search players"><kbd>/</kbd><div class="sugg" hidden></div></div>`;
+}
+
+/* ============ DISCORD ============ */
+const webhookOn = () => /^https:\/\/(canary\.|ptb\.)?discord(app)?\.com\/api\/webhooks\//.test(DISCORD_WEBHOOK);
+async function notify(embed, ping){
+  if (!webhookOn()) return 'off';
+  try{
+    const body = {username:'HiveTiers', embeds:[embed], allowed_mentions:{parse:[], roles: REFEREE_ROLE_ID ? [REFEREE_ROLE_ID] : []}};
+    if (ping && REFEREE_ROLE_ID) body.content = `<@&${REFEREE_ROLE_ID}>`;
+    const r = await fetch(DISCORD_WEBHOOK, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)});
+    return r.ok ? 'ok' : 'fail';
+  }catch(e){ return 'fail'; }
+}
+const clip = (s,n) => String(s||'').length>n ? String(s).slice(0,n-1)+'…' : String(s||'');
+function rankLines(a, b, modes){
+  return modes.map(m => `${modeIcon(m)} **${modeName(m)}**: ${esc2(a.name)} \`${tierName(a.tiers[m])}\` vs ${esc2(b.name)} \`${tierName(b.tiers[m])}\``).join('\n');
+}
+const esc2 = s => String(s).replace(/([*_`~|>\\])/g,'\\$1');
+function timeField(t){ const u = Math.floor(t/1000); return `<t:${u}:F>\n<t:${u}:R>`; }
+function embedChallenge(c, a, b){
+  const f = [
+    {name:'Gamemodes', value:c.modes.map(m => modeIcon(m)+' '+modeName(m)).join('  ·  '), inline:false},
+    {name:'Match time', value:timeField(c.time), inline:true},
+    {name:'Challenger Discord', value:clip(esc2(c.fromDiscord),100), inline:true},
+    {name:'Ranks in these modes', value:clip(rankLines(a,b,c.modes),1000), inline:false}
+  ];
+  if (c.about) f.push({name:'About the challenger', value:clip(esc2(c.about),500), inline:false});
+  return {title:'⚔️ New challenge', description:`**${esc2(c.fromName)}** challenged **${esc2(c.toName)}** to a 1v1.`, color:0xFFBF2F, fields:f, footer:{text:'HiveTiers'}, timestamp:new Date().toISOString()};
+}
+const embedSimple = (title, text, color) => ({title, description:text, color, footer:{text:'HiveTiers'}, timestamp:new Date().toISOString()});
+
+/* ============ DATA ============ */
+function computeRanks(){
+  RK.overall = PLAYERS.filter(p => total(p)>0).sort((a,b) => total(b)-total(a) || a.name.localeCompare(b.name));
+  MODES.forEach(m => {
+    RK[m.id] = PLAYERS.filter(p => p.tiers[m.id]!=null)
+      .sort((a,b) => pts(b.tiers[m.id])-pts(a.tiers[m.id]) || total(b)-total(a) || a.name.localeCompare(b.name));
+  });
+}
+async function loadData(){
+  lastLoad = Date.now();
+  try{
+    const [us, ps] = await Promise.all([getDocs(collection(db,'users')), getDocs(collection(db,'players'))]);
+    const pm = {}; ps.forEach(d => pm[d.id] = d.data());
+    PLAYERS = us.docs.map(d => {
+      const u = d.data(), p = pm[d.id] || {};
+      return {uid:d.id, name:u.ign, region:u.region||'', youtube:u.youtube||'', headData:safeImg(u.headData),
+        tiers:Object.fromEntries(MODES.map(m => [m.id, tierIdx((p.tiers||{})[m.id])])),
+        history:(p.history||[]).map(h => Object.assign({}, h, {tier:tierIdx(h.tier)})).filter(h => h.tier!=null)};
+    });
+    HEADS = {}; PLAYERS.forEach(p => { if (p.headData) HEADS[p.name.toLowerCase()] = p.headData; });
+    computeRanks(); loadError = null;
+  }catch(e){ console.error(e); loadError = e; }
+  loading = false;
+}
+async function getSkin(uid){
+  if (SKINS[uid] !== undefined) return SKINS[uid];
+  try{ const s = await getDoc(doc(db,'skins',uid)); SKINS[uid] = s.exists() ? safeImg(s.data().data) : ''; }
+  catch(e){ SKINS[uid] = ''; }
+  return SKINS[uid];
+}
+async function loadChallenges(){
+  if (!authUser){ CH = []; return; }
+  const u = authUser.uid;
+  const [a, b] = await Promise.all([
+    getDocs(query(collection(db,'challenges'), where('fromUid','==',u))),
+    getDocs(query(collection(db,'challenges'), where('toUid','==',u)))
+  ]);
+  const m = new Map(); [...a.docs, ...b.docs].forEach(d => m.set(d.id, Object.assign({id:d.id}, d.data())));
+  CH = [...m.values()].sort((x,y) => (y.createdAt||0)-(x.createdAt||0));
+  CH.forEach(c => {
+    if (c.outcome && c.outcome.ranks){
+      const r = {};
+      Object.entries(c.outcome.ranks).forEach(([u,t]) => { r[u] = Object.fromEntries(MODES.map(m => [m.id, tierIdx(t && t[m.id])])); });
+      c.outcome = Object.assign({}, c.outcome, {ranks:r});
+    }
+  });
+}
+async function loadTierTests(){
+  if (!authUser){ TT = []; return; }
+  const s = await getDocs(query(collection(db,'tierTests'), where('uid','==',authUser.uid)));
+  TT = s.docs.map(d => Object.assign({id:d.id}, d.data())).sort((x,y) => (y.createdAt||0)-(x.createdAt||0));
+}
+const awaitingMe = () => authUser ? CH.filter(c => c.status==='pending' && c.awaiting===authUser.uid).length : 0;
+
+/* ============ SKIN HANDLING ============ */
+function makeHead(src){
+  const c = document.createElement('canvas'); c.width = c.height = 8;
+  const x = c.getContext('2d'); x.imageSmoothingEnabled = false;
+  x.drawImage(src, 8,8,8,8, 0,0,8,8);
+  x.drawImage(src, 40,8,8,8, 0,0,8,8);
+  return c.toDataURL('image/png');
+}
+function readSkin(file){
+  return new Promise((res, rej) => {
+    if (file.type !== 'image/png') return rej(new Error('Skin must be a PNG file.'));
+    if (file.size > 100000) return rej(new Error('That file is too big to be a skin. Skins are under 10 KB.'));
+    const url = URL.createObjectURL(file), img = new Image();
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      if (img.naturalWidth!==64 || (img.naturalHeight!==64 && img.naturalHeight!==32))
+        return rej(new Error(`This image is ${img.naturalWidth}x${img.naturalHeight}. Skins must be exactly 64x64 pixels.`));
+      const c = document.createElement('canvas'); c.width = 64; c.height = img.naturalHeight;
+      c.getContext('2d').drawImage(img,0,0);
+      const skin = c.toDataURL('image/png');
+      if (skin.length > 45000) return rej(new Error('Skin file is too large after processing.'));
+      res({skin, head:makeHead(c)});
+    };
+    img.onerror = () => rej(new Error('Could not read that image.'));
+    img.src = url;
+  });
+}
+function mkViewer(canvas, skin){
+  if (!window.skinview3d || !canvas) return null;
+  try{
+    const v = new skinview3d.SkinViewer({canvas, width:canvas.width, height:canvas.height, skin});
+    v.animation = new skinview3d.IdleAnimation();
+    v.autoRotate = true; v.autoRotateSpeed = .6; v.zoom = .85;
+    if (v.controls){ v.controls.enableZoom = false; v.controls.enablePan = false; }
+    return v;
+  }catch(e){ console.error(e); return null; }
+}
+function killViewer(){ if (VIEWER){ try{ VIEWER.dispose(); }catch(e){} VIEWER = null; } }
+function killPrev(){ if (PREV){ try{ PREV.dispose(); }catch(e){} PREV = null; } }
+function previewSkin(dataUrl){
+  if ($('#prevcanvas')){ killPrev(); PREV = mkViewer($('#prevcanvas'), dataUrl); }
+  else if (VIEWER){ try{ VIEWER.loadSkin(dataUrl); }catch(e){} }
+}
+
+/* ============ SEARCH ============ */
+function bindSearch(box){
+  const input = $('input', box), sugg = $('.sugg', box);
+  let items = [], act = -1;
+  function show(){
+    const q = input.value.trim().toLowerCase();
+    if (!q){ sugg.hidden = true; return; }
+    items = PLAYERS.filter(p => p.name.toLowerCase().includes(q))
+      .sort((a,b) => (b.name.toLowerCase().startsWith(q)) - (a.name.toLowerCase().startsWith(q)) || total(b)-total(a)).slice(0,6);
+    act = items.length ? 0 : -1;
+    sugg.innerHTML = items.length
+      ? items.map((p,i) => `<a href="#/player/${enc(p.name)}" class="${i===act?'act':''}">${avatar(p.name,32)}<span class="n">${esc(p.name)}</span>${badge(bestTier(p),32)}</a>`).join('')
+      : `<p>No player named “${esc(input.value.trim())}”.</p>`;
+    sugg.hidden = false;
+  }
+  input.addEventListener('input', show);
+  input.addEventListener('focus', show);
+  input.addEventListener('keydown', e => {
+    if (e.key==='ArrowDown' || e.key==='ArrowUp'){
+      if (!items.length) return; e.preventDefault();
+      act = (act + (e.key==='ArrowDown'?1:-1) + items.length) % items.length;
+      $$('a', sugg).forEach((a,i) => a.classList.toggle('act', i===act));
+    } else if (e.key==='Enter'){
+      e.preventDefault();
+      if (items[act]){ location.hash = '#/player/'+enc(items[act].name); input.value=''; sugg.hidden=true; input.blur(); }
+      else if (input.value.trim()) toast(`No player named “${input.value.trim()}”.`);
+    } else if (e.key==='Escape'){ input.value=''; sugg.hidden=true; }
+  });
+  sugg.addEventListener('click', () => { input.value=''; sugg.hidden=true; });
+}
+document.addEventListener('click', e => { $$('[data-search] .sugg').forEach(s => { if (!s.parentElement.contains(e.target)) s.hidden = true; }); });
+
+/* ============ OVERLAYS: LOGIN GATE + ONBOARDING ============ */
+const gIcon = '<svg viewBox="0 0 48 48" width="20" height="20" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>';
+const logoHTML = '<div class="logo"><i>H</i><span style="display:inline">HiveTiers</span></div>';
+
+function gateHTML(){
+  const signup = gateMode==='signup';
+  return `<div class="gate-card">
+    ${logoHTML}
+    <h1>${signup?'Sign up':'Log in'}</h1>
+    <p class="sub">${signup?'Create an account to challenge players and get ranked.':'Welcome back. Log in to challenge players.'}</p>
+    <form id="${signup?'signup-form':'login-form'}" class="gform" novalidate>
+      <input class="field" id="g-user" type="text" maxlength="16" autocomplete="username" autocapitalize="off" spellcheck="false" placeholder="Username">
+      <input class="field" id="g-pass" type="password" autocomplete="${signup?'new-password':'current-password'}" placeholder="Password">
+      ${signup?'<input class="field" id="g-pass2" type="password" autocomplete="new-password" placeholder="Confirm password">':''}
+      <div class="err" id="g-err" role="alert"></div>
+      <button class="btn primary" type="submit" style="width:100%">${signup?'Sign up':'Log in'}</button>
+    </form>
+    <div class="or"><span>or</span></div>
+    <button class="btn gbtn" data-act="google">${gIcon}<span>${signup?'Sign up with Google':'Continue with Google'}</span></button>
+    <p class="swap">${signup?'Already have an account?':'New here?'} <button class="link" data-act="${signup?'gate-login':'gate-signup'}">${signup?'Log in':'Create new account'}</button></p>
+    <button class="link skip" data-act="guest">Skip and just view rankings</button>
+  </div>`;
+}
+function suggestedName(){
+  if (PENDING_NAME) return PENDING_NAME;
+  const em = (authUser && authUser.email) || '';
+  if (em.endsWith('@'+FAKE_DOMAIN)) return em.split('@')[0];
+  return ((authUser && authUser.displayName) || '').replace(/[^A-Za-z0-9_]/g,'').slice(0,16);
+}
+function onboardHTML(){
+  return `<div class="ob">
+    <div class="ob-head">${logoHTML}<h1>Set up your profile</h1><p class="sub">Only your username is required. Press Skip to finish later.</p></div>
+    <form id="ob-form" class="ob-grid" novalidate>
+      <div class="ob-skin card">
+        <b>Your skin</b>
+        <div class="prev"><canvas id="prevcanvas" width="170" height="230" aria-label="3D skin preview"></canvas></div>
+        <p class="muted" id="prevnote" style="margin:0;font-size:13px;text-align:center">Default Steve skin</p>
+        <label class="btn sm" style="cursor:pointer">Upload skin (64x64 PNG)<input type="file" id="skinfile" accept="image/png" hidden></label>
+        <div class="err" id="skin-err" role="alert" style="text-align:center"></div>
+      </div>
+      <div class="ob-fields">
+        <div><label class="l" for="ob-ign">Username</label><input class="field" id="ob-ign" type="text" maxlength="16" autocomplete="off" autocapitalize="off" value="${esc(suggestedName())}" placeholder="3 to 16 letters, numbers or _"></div>
+        <div class="f2">
+          <div><label class="l" for="ob-dc">Discord username</label><input class="field" id="ob-dc" type="text" maxlength="40" autocomplete="off" placeholder="Optional"></div>
+          <div><label class="l" for="ob-region">Region</label><select class="field" id="ob-region"><option value="">Not set</option>${REGIONS.map(r => `<option>${r}</option>`).join('')}</select></div>
+        </div>
+        <div><label class="l" for="ob-srv">Discord server link</label><input class="field" id="ob-srv" type="url" maxlength="200" placeholder="https://discord.gg/… (optional)"></div>
+        <div><label class="l" for="ob-yt">YouTube channel link</label><input class="field" id="ob-yt" type="url" maxlength="200" placeholder="https://youtube.com/@… (optional)"></div>
+        <div class="hint">Only you and testers can see your Discord and server link.</div>
+        <div class="err" id="ob-err" role="alert"></div>
+        <div class="bar" style="margin:0"><button class="btn primary" type="submit" style="flex:1">Done</button><button class="btn" type="button" data-act="ob-skip" style="flex:1">Skip</button></div>
+        <button class="link skip" type="button" data-act="signout">Log out</button>
+      </div>
+    </form>
+  </div>`;
+}
+function syncOverlays(){
+  const o = $('#overlay');
+  let html = '';
+  if (!authReady) html = `<div class="gate-card" style="text-align:center">${logoHTML}<p class="sub">Loading…</p></div>`;
+  else if (authUser && !profile) html = onboardHTML();
+  else if (!authUser && !guest) html = gateHTML();
+  killPrev();
+  if (html){
+    o.innerHTML = html; o.hidden = false; document.body.classList.add('locked');
+    if (authReady && authUser && !profile) PREV = mkViewer($('#prevcanvas'), STEVE_SKIN);
+    else { const u = $('#g-user'); if (u && !matchMedia('(pointer:coarse)').matches) u.focus(); }
+  } else { o.hidden = true; o.innerHTML = ''; document.body.classList.remove('locked'); }
+}
+const gerr = m => { const e = $('#g-err'); if (e) e.textContent = m; };
+
+async function createProfile(d){
+  const ign = d.ign, uid = authUser.uid;
+  const nm = await getDoc(doc(db,'names',ign.toLowerCase()));
+  if (nm.exists()) return d.err('That username is already taken. Try another one.');
+  const skin = d.skin || STEVE_SKIN, head = d.head || STEVE_HEAD;
+  const b = writeBatch(db);
+  b.set(doc(db,'users',uid), {ign, region:d.region||'', youtube:d.youtube||'', headData:head, createdAt:Date.now()});
+  b.set(doc(db,'names',ign.toLowerCase()), {uid});
+  b.set(doc(db,'private',uid), {discord:d.discord||'', serverLink:d.serverLink||''});
+  b.set(doc(db,'skins',uid), {data:skin, updatedAt:serverTimestamp()});
+  await b.commit();
+  SKINS[uid] = skin; PENDING_SKIN = null; PENDING_NAME = '';
+  profile = {ign, region:d.region||'', youtube:d.youtube||'', headData:head, createdAt:Date.now()};
+  priv = {discord:d.discord||'', serverLink:d.serverLink||''};
+  await loadData(); updateTopbar(); syncOverlays(); render();
+  toast('Welcome, '+ign+'!');
+}
+async function submitOnboard(skip){
+  const err = m => { $('#ob-err').textContent = m; };
+  err('');
+  const ign = $('#ob-ign').value.trim();
+  if (!NAME_RE.test(ign)) return err('Username must be 3 to 16 letters, numbers or underscores.');
+  const d = {ign, err};
+  if (!skip){
+    d.region = $('#ob-region').value; d.discord = $('#ob-dc').value.trim(); d.serverLink = $('#ob-srv').value.trim();
+    d.youtube = $('#ob-yt').value.trim();
+    if (d.youtube && !validYT(d.youtube)) return err('The YouTube link must be a https://youtube.com or https://youtu.be address.');
+    if (d.serverLink && !validDC(d.serverLink)) return err('The server link must start with https://discord.gg/ or https://discord.com/invite/');
+    if (PENDING_SKIN){ d.skin = PENDING_SKIN.skin; d.head = PENDING_SKIN.head; }
+  }
+  const btns = $$('#ob-form button'); btns.forEach(b => b.disabled = true);
+  try{ await createProfile(d); } finally { btns.forEach(b => b.disabled = false); }
+}
+
+/* ============ VIEWS ============ */
+function stateCard(){
+  if (loading) return `<div class="card empty"><b>Loading rankings…</b>Fetching players from the database.</div>`;
+  if (loadError) return `<div class="card empty"><b>Couldn't load players</b>${esc(errMsg(loadError))}<br><br><button class="btn" data-act="reload">Try again</button></div>`;
+  return '';
+}
+function viewHome(){
+  const cards = [{id:'overall', name:'Overall', icon:'🏆'}, ...MODES].map(m => {
+    const top = (RK[m.id]||[]).slice(0,3);
+    return `<article class="card champ">
+      <header><span class="ic">${m.icon}</span><h3>${m.name}</h3></header>
+      ${top.length ? `<ol>${top.map((p,i) => `<li><a href="#/player/${enc(p.name)}"><span class="pos">${i+1}</span>${avatar(p.name,30)}<span class="nm">${esc(p.name)}</span>${m.id==='overall' ? `<span class="pt">${total(p)} pts</span>` : badge(p.tiers[m.id],34)}</a></li>`).join('')}</ol>` : `<p class="muted" style="margin:0 0 12px">No ranked players yet.</p>`}
+      <button class="more" data-act="goto-lb" data-v="${m.id}">See full ${m.name} board</button>
+    </article>`;
+  }).join('');
+  return `<section class="hero">
+      <h1>Look up any player's tiers</h1>
+      ${searchBox('homesearch', true)}
+      <div class="cta">
+        <a class="btn primary" href="#/leaderboard">Leaderboard</a>
+        <a class="btn" href="#/challenge">Challenge a player</a>
+      </div>
+      <p class="stats">${loading ? 'Loading…' : `${RK.overall.length} ranked players · ${PLAYERS.length} registered · ${MODES.length} gamemodes`}</p>
+    </section>
+    <h2 style="font-size:20px;margin:0 0 14px">Top players right now</h2>
+    ${stateCard() || `<div class="grid4">${cards}</div>`}`;
+}
+
+let LB = {mode:'overall', view:'list', q:'', region:'all'};
+function lbFiltered(){
+  const q = LB.q.trim().toLowerCase();
+  return (RK[LB.mode]||[]).map((p,i) => ({p, rk:i+1}))
+    .filter(x => (LB.region==='all' || x.p.region===LB.region) && x.p.name.toLowerCase().includes(q));
+}
+function lbResults(){
+  const list = lbFiltered();
+  if (!list.length) return `<div class="card empty"><b>No players here yet</b>Try a different filter, or <a href="#/challenge" style="text-decoration:underline">challenge someone</a> to get ranked.</div>`;
+  if (LB.view==='tiers' && LB.mode!=='overall'){
+    let h = '<div class="cols cols3">';
+    [['HT','High tier'],['MT','Mid tier'],['LT','Low tier']].forEach(([g,label]) => {
+      h += `<div class="col g${g}"><h3>${label}</h3>`;
+      for (let n=1; n<=5; n++){
+        const idx = TIERS.indexOf(g+n);
+        const ps = list.filter(x => x.p.tiers[LB.mode]===idx);
+        h += `<div class="sub"><span>${g}${n}</span><em>${PTS[g+n]} pts</em></div>` +
+          (ps.length ? ps.map(x => `<a class="chip" href="#/player/${enc(x.p.name)}">${avatar(x.p.name,28)}<span>${esc(x.p.name)}</span></a>`).join('') : '<p class="none">No players</p>');
+      }
+      h += '</div>';
+    });
+    return h + '</div>';
+  }
+  const one = LB.mode!=='overall';
+  return `<div class="list">${list.map(({p,rk}) => {
+    const sub = [titleOf(p), p.region].filter(Boolean).join(' · ');
+    const bds = one ? `<span class="bds">${badge(p.tiers[LB.mode],44)}</span>` : `<span class="bds">${MODES.map(m => badge(p.tiers[m.id],40)).join('')}</span>`;
+    const pt = `<span class="pt">${one?pts(p.tiers[LB.mode]):total(p)}<small>points</small></span>`;
+    return `<a class="row ${one?'one':''}" href="#/player/${enc(p.name)}" data-rk="${rk}"><span class="rk">${rk}</span>${avatar(p.name,40)}<span class="nm"><b>${esc(p.name)}</b><small>${esc(sub)}</small></span>${bds}${pt}</a>`;
+  }).join('')}</div>`;
+}
+function viewLeaderboard(){
+  const tabs = [{id:'overall',name:'Overall'}, ...MODES];
+  return `<div class="ph"><div><h1>Leaderboard</h1><p>${LB.mode==='overall' ? 'Total points across all gamemodes.' : modeName(LB.mode)+' ranked by tier.'}</p></div>
+      <button class="btn sm" data-act="legend">How tiers work</button></div>
+    <div class="bar">
+      <div class="seg" role="tablist">${tabs.map(t => `<button data-act="lbtab" data-v="${t.id}" class="${LB.mode===t.id?'on':''}">${t.name}</button>`).join('')}</div>
+      ${LB.mode!=='overall' ? `<div class="seg"><button data-act="lbview" data-v="list" class="${LB.view==='list'?'on':''}">List</button><button data-act="lbview" data-v="tiers" class="${LB.view==='tiers'?'on':''}">Tier columns</button></div>` : ''}
+      <span class="spacer"></span>
+      <select class="sel" id="lbregion" aria-label="Region"><option value="all">All regions</option>${REGIONS.map(r => `<option ${LB.region===r?'selected':''}>${r}</option>`).join('')}</select>
+      <div class="search">${searchIcon}<input id="lbq" type="search" placeholder="Filter this list…" value="${esc(LB.q)}" aria-label="Filter list"></div>
+    </div>
+    <div id="lbres">${stateCard() || lbResults()}</div>`;
+}
+
+let CMP = '';
+function modeCardsHTML(p){
+  return MODES.map(m => {
+    const t = p.tiers[m.id];
+    return `<div class="card mcard">${badge(t,76)}<div><h3>${m.icon} ${m.name}</h3>${t==null ? `<div class="sm">Unranked</div>` : `<div class="sm">#${rankOf(p,m.id)} of ${RK[m.id].length} · ${pts(t)} pts</div>`}</div></div>`;
+  }).join('');
+}
+function viewPlayer(name){
+  const sc = stateCard(); if (sc) return sc;
+  const p = findPlayer(name);
+  if (!p) return `<div class="card empty"><b>No player named “${esc(name)}”</b>Check the spelling. Players appear here after they sign up.<br><br><a class="btn primary" href="#/leaderboard">Open leaderboard</a></div>`;
+  const isMe = authUser && p.uid===authUser.uid;
+  const ovr = rankOf(p,'overall');
+  const hist = [...p.history].sort((a,b) => b.date-a.date).map(h =>
+    `<li>${badge(h.tier,34)}<span>Reached <b>${TIERS[h.tier]}</b> in ${modeName(h.mode)}</span><time>${fmtDate(h.date)}</time></li>`).join('');
+  const others = PLAYERS.filter(x => x!==p).sort((a,b) => a.name.localeCompare(b.name));
+  const yt = p.youtube && validYT(p.youtube) ? `<a class="chip-tag" href="${esc(p.youtube)}" target="_blank" rel="noopener noreferrer">▶ YouTube</a>` : '';
+  return `<div class="card phead">
+      <div class="skinbox"><canvas id="skin3d" width="230" height="310" aria-label="3D skin of ${esc(p.name)}"></canvas><small class="muted" id="skinnote">Loading skin…</small></div>
+      <div class="pinfo"><h1>${esc(p.name)} ${isMe?'<span class="chip-tag">You</span>':''}</h1>
+        <div class="meta">${p.region?`<span class="chip-tag">${esc(p.region)}</span>`:''}<span class="chip-tag">${titleOf(p)}</span>${yt}</div>
+        <div class="bar" style="margin:16px 0 0">
+          ${isMe ? '<a class="btn sm" href="#/profile">Edit profile</a>' : `<a class="btn primary" href="#/challenge/${enc(p.name)}">⚔️ Challenge</a>`}
+          <button class="btn sm" data-act="copy-link">Copy link</button>
+        </div></div>
+      <div class="big"><b>${ovr?'#'+ovr:'Unranked'}</b><span>${ovr?'Overall · '+total(p)+' points':'No rank yet'}</span></div>
+    </div>
+    <div class="modes">${modeCardsHTML(p)}</div>
+    <div class="two">
+      <section class="card"><h3>Tier history</h3>${hist ? `<ul class="hist">${hist}</ul>` : '<p class="muted" style="margin:10px 0 0">No tests yet.</p>'}</section>
+      <section class="card"><h3>Compare</h3>
+        <p class="muted" style="margin:6px 0 10px">Pick another player to see who leads.</p>
+        <select class="sel" id="cmpsel" style="width:100%" aria-label="Compare with"><option value="">Choose a player…</option>${others.map(o => `<option ${CMP===o.name?'selected':''}>${esc(o.name)}</option>`).join('')}</select>
+        ${compareHTML(p)}
+      </section>
+    </div>`;
+}
+function compareHTML(p){
+  const o = findPlayer(CMP);
+  if (!o || o===p) return '';
+  let a=0, b=0;
+  const rows = MODES.map(m => {
+    const x=p.tiers[m.id], y=o.tiers[m.id], xs = x==null?99:x, ys = y==null?99:y;
+    let cx='', cy='';
+    if (xs<ys){ a++; cx='win'; } else if (ys<xs){ b++; cy='win'; }
+    return `<tr><td>${m.name}</td><td class="${cx}">${badge(x,40)}</td><td class="${cy}">${badge(y,40)}</td></tr>`;
+  }).join('');
+  const rp = rankOf(p,'overall'), ro = rankOf(o,'overall');
+  const verdict = a===b ? 'Dead even across modes.' : `${esc(a>b?p.name:o.name)} leads ${Math.max(a,b)}–${Math.min(a,b)} in modes.`;
+  return `<table class="cmp"><thead><tr><th></th><th>${esc(p.name)}</th><th>${esc(o.name)}</th></tr></thead><tbody>
+    <tr><td>Overall</td><td class="${total(p)>total(o)?'win':''}">${rp?'#'+rp:'–'}</td><td class="${total(o)>total(p)?'win':''}">${ro?'#'+ro:'–'}</td></tr>
+    <tr><td>Points</td><td class="${total(p)>total(o)?'win':''}">${total(p)}</td><td class="${total(o)>total(p)?'win':''}">${total(o)}</td></tr>${rows}</tbody></table><p class="verdict">${verdict}</p>`;
+}
+async function mountSkin(p, token){
+  const s = await getSkin(p.uid);
+  if (token !== TOKEN) return;
+  const cv = $('#skin3d'), note = $('#skinnote');
+  if (!cv) return;
+  VIEWER = mkViewer(cv, s || STEVE_SKIN);
+  if (note) note.textContent = VIEWER ? 'Drag to rotate' : '3D viewer could not load.';
+}
+
+/* ----- profile page ----- */
+function viewProfile(){
+  if (!authReady) return `<div class="card empty"><b>Loading…</b></div>`;
+  if (!authUser || !profile) return `<div class="card empty"><b>Log in to see your profile</b>Your rank, skin and details live here.<br><br><button class="btn primary" data-act="open-me">Log in</button></div>`;
+  const sc = stateCard(); if (sc) return sc;
+  const p = myPlayer() || {uid:authUser.uid, name:profile.ign, tiers:{boxing:null,midfight:null,sky:null}, history:[]};
+  const ovr = rankOf(p,'overall');
+  const pr = priv || {discord:'',serverLink:''};
+  return `<div class="ph"><div><h1>Your profile</h1><p>Your rank, skin and details.</p></div><button class="btn sm danger" data-act="signout">Log out</button></div>
+    <div class="card phead">
+      <div class="skinbox"><canvas id="skin3d" width="230" height="310" aria-label="Your 3D skin"></canvas><small class="muted" id="skinnote">Loading skin…</small>
+        <label class="btn sm" style="cursor:pointer">Change skin (64x64 PNG)<input type="file" id="skinfile" accept="image/png" hidden></label>
+        <button class="btn primary sm" id="saveskin" data-act="save-skin" hidden>Save this skin</button>
+        <div class="err" id="skin-err" role="alert" style="text-align:center"></div></div>
+      <div class="pinfo"><h1>${esc(profile.ign)}</h1>
+        <div class="meta">${profile.region?`<span class="chip-tag">${esc(profile.region)}</span>`:''}<span class="chip-tag">${titleOf(p)}</span></div>
+        <div class="bar" style="margin:16px 0 0"><a class="btn sm" href="#/player/${enc(profile.ign)}">View public page</a><a class="btn primary sm" href="#/challenge">⚔️ Challenge</a></div></div>
+      <div class="big"><b>${ovr?'#'+ovr:'Unranked'}</b><span>${ovr?'Overall · '+total(p)+' points':'Challenge someone to get ranked'}</span></div>
+    </div>
+    <div class="modes">${modeCardsHTML(p)}</div>
+    <form class="card form" id="profile-form" novalidate>
+      <h3>Your details</h3>
+      <div class="f2">
+        <div><label class="l" for="pf-dc">Discord username</label><input class="field" id="pf-dc" type="text" maxlength="40" value="${esc(pr.discord)}" placeholder="Not added yet"></div>
+        <div><label class="l" for="pf-region">Region</label><select class="field" id="pf-region"><option value="">Not set</option>${REGIONS.map(r => `<option ${profile.region===r?'selected':''}>${r}</option>`).join('')}</select></div>
+      </div>
+      <div><label class="l" for="pf-srv">Discord server link</label><input class="field" id="pf-srv" type="url" maxlength="200" value="${esc(pr.serverLink)}" placeholder="Not added yet"></div>
+      <div><label class="l" for="pf-yt">YouTube channel link</label><input class="field" id="pf-yt" type="url" maxlength="200" value="${esc(profile.youtube||'')}" placeholder="Not added yet"><div class="hint">Shown as a public link on your player page.</div></div>
+      <div class="hint">Only you and testers can see your Discord and server link.</div>
+      <div class="err" id="pf-err" role="alert"></div>
+      <button class="btn primary" type="submit">Save details</button>
+    </form>`;
+}
+
+/* ----- challenge page ----- */
+function oppPlayer(){ return CHF.opp ? PLAYERS.find(p => p.uid===CHF.opp) : null; }
+function viewChallenge(arg){
+  if (!authReady) return `<div class="card empty"><b>Loading…</b></div>`;
+  if (!authUser || !profile) return `<div class="ph"><div><h1>Challenge</h1><p>Beat a player to climb the leaderboard.</p></div></div>
+    <div class="card empty"><b>Log in to challenge players</b>You need an account so the other player and the testers know who you are.<br><br><button class="btn primary" data-act="open-me">Log in or sign up</button></div>`;
+  const sc = stateCard(); if (sc) return sc;
+  if (arg){ const p = findPlayer(arg); if (p && p.uid!==authUser.uid){ CHF.opp = p.uid; CHTAB = 'new'; history.replaceState(null,'','#/challenge'); } }
+  const n = awaitingMe();
+  return `<div class="ph"><div><h1>Challenge</h1><p>Pick a player, pick the gamemodes and a time. Win to climb the ranks.</p></div></div>
+    <div class="seg" style="margin-bottom:14px"><button data-act="chtab" data-v="new" class="${CHTAB==='new'?'on':''}">New challenge</button><button data-act="chtab" data-v="mine" class="${CHTAB==='mine'?'on':''}">My challenges${n?` <span class="dot">${n}</span>`:''}</button></div>
+    <div id="chbody">${CHTAB==='new' ? chNewHTML() : `<div id="chbox">${chHTML()}</div>`}</div>`;
+}
+function chNewHTML(){
+  const mine = myPlayer();
+  const unranked = !mine || total(mine)===0;
+  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || 'your local time';
+  return `<form class="card form" id="ch-form" novalidate>
+    ${unranked ? `<div class="note"><b>You are unranked.</b> Challenge a ranked player or a tester. A tester will rank you after the match.</div>` : ''}
+    <div><label class="l" for="opp-q">Who do you want to challenge?</label>
+      <div class="search">${searchIcon}<input id="opp-q" type="search" autocomplete="off" spellcheck="false" placeholder="Search players…"></div>
+      <div id="opp-results" class="pickrows" hidden></div>
+      <div id="opp-selected"></div></div>
+    <div><label class="l">Gamemodes</label><div id="mode-picks" class="picks"></div></div>
+    <div><label class="l" for="c-time">Match time</label><input class="field" id="c-time" type="datetime-local" min="${localDT(Date.now())}" value="${localDT(Date.now()+864e5)}"><div class="hint">Your time zone: ${esc(tz)}. The other player sees it in their own time.</div></div>
+    <div><label class="l" for="c-dc">Your Discord username</label><input class="field" id="c-dc" type="text" maxlength="40" autocomplete="off" value="${esc((priv&&priv.discord)||lsGet('hts_discord',''))}" placeholder="username"></div>
+    <div><label class="l" for="c-about">About you <span class="muted">(optional)</span></label><textarea class="field" id="c-about" maxlength="300" rows="3" placeholder="Playstyle, ping, what you want from this match…"></textarea></div>
+    <div class="err" id="c-err" role="alert"></div>
+    <button class="btn primary" type="submit">Send challenge</button>
+  </form>`;
+}
+function renderOppSelected(){
+  const box = $('#opp-selected'); if (!box) return;
+  const o = oppPlayer(), mine = myPlayer();
+  box.innerHTML = o ? `<div class="oppcard">${avatar(o.name,44)}<div style="flex:1;min-width:0"><b>${esc(o.name)}</b><div class="muted" style="font-size:13px">${esc([titleOf(o), o.region].filter(Boolean).join(' · '))}</div></div><button class="btn sm" type="button" data-act="opp-clear">Change</button></div>` : '';
+  const picks = $('#mode-picks');
+  if (picks) picks.innerHTML = MODES.map(m => `<label class="pick ${CHF.modes.includes(m.id)?'on':''}"><input type="checkbox" value="${m.id}" ${CHF.modes.includes(m.id)?'checked':''}><span class="pn">${m.icon} ${m.name}</span><span class="pr"><small>You</small>${badge(mine?mine.tiers[m.id]:null,30)}<small>Them</small>${badge(o?o.tiers[m.id]:null,30)}</span></label>`).join('');
+}
+function renderOppResults(){
+  const box = $('#opp-results'), q = ($('#opp-q').value||'').trim().toLowerCase();
+  if (!q){ box.hidden = true; return; }
+  const list = PLAYERS.filter(p => p.uid!==authUser.uid && p.name.toLowerCase().includes(q)).slice(0,6);
+  box.innerHTML = list.length ? list.map(p => `<button type="button" class="pickrow" data-act="opp-pick" data-uid="${p.uid}">${avatar(p.name,32)}<span class="n">${esc(p.name)}</span>${badge(bestTier(p),30)}</button>`).join('') : `<p class="muted" style="margin:8px">No player named “${esc($('#opp-q').value.trim())}”.</p>`;
+  box.hidden = false;
+}
+function outcomeHTML(c){
+  const o = c.outcome;
+  const winnerName = c.winner===c.fromUid ? c.fromName : c.toName;
+  if (!o) return `Winner: <b>${esc(winnerName)}</b>`;
+  const games = (o.games||[]).map(g => {
+    const w = g.winner===c.fromUid ? c.fromName : c.toName;
+    const hi = g.winner===c.fromUid ? g.from : g.to, lo = g.winner===c.fromUid ? g.to : g.from;
+    return `<span>${modeIcon(g.mode)} ${esc(modeName(g.mode))}: <b>${esc(w)}</b> won ${hi}–${lo}</span>`;
+  }).join('');
+  const line = (uid, name) => {
+    const r = (o.ranks && o.ranks[uid]) || {};
+    return `<span class="oc-row"><b>${esc(name)}</b>${c.winner===uid?' 🏆':''} ${MODES.map(m => `<span class="oc-m">${m.icon}${badge(r[m.id]==null?null:r[m.id],26)}</span>`).join('')}</span>`;
+  };
+  return `<span class="oc"><span><b>Match finished.</b> Winner: ${esc(winnerName)}</span>${games}<span class="muted">Ranks after this match:</span>${line(c.fromUid,c.fromName)}${line(c.toUid,c.toName)}</span>`;
+}
+function chHTML(){
+  if (!CH.length) return `<div class="card empty"><b>No challenges yet</b>Send one from the New challenge tab.</div>`;
+  const uid = authUser.uid;
+  return `<div class="apps">${CH.map(c => {
+    const mineIsFrom = c.fromUid===uid;
+    const other = mineIsFrom ? {name:c.toName} : {name:c.fromName};
+    const theirDc = mineIsFrom ? c.toDiscord : c.fromDiscord;
+    let acts = '', note = '';
+    if (c.status==='pending'){
+      if (c.awaiting===uid) acts = `<button class="btn sm primary" data-act="ch-accept" data-id="${c.id}">Accept</button><button class="btn sm" data-act="ch-counter" data-id="${c.id}">New time</button><button class="btn sm danger" data-act="ch-set" data-id="${c.id}" data-v="declined">Decline</button>`;
+      else { note = `Waiting for ${esc(other.name)}`; acts = `<button class="btn sm danger" data-act="ch-set" data-id="${c.id}" data-v="cancelled">Cancel</button>`; }
+    } else if (c.status==='accepted'){
+      note = `Contact on Discord: <b>${esc(theirDc||'?')}</b>. Play your match. A tester will post the result here.`;
+    } else if (c.status==='completed'){
+      note = outcomeHTML(c);
+    }
+    const modes = (c.modes||[]).map(m => modeIcon(m)+' '+modeName(m)).join(' · ');
+    return `<div class="app"><div class="info"><b>${mineIsFrom?'You → ':''}<a href="#/player/${enc(other.name)}" style="text-decoration:underline">${esc(other.name)}</a>${mineIsFrom?'':' → you'}</b>
+      <small>${modes} · ${fmtDT(c.time)}</small>
+      ${c.about?`<small>“${esc(c.about)}”</small>`:''}${note?`<small>${note}</small>`:''}</div>
+      <span class="status ${esc(c.status)}">${esc(c.status)}</span><div class="acts" style="width:100%">${acts}</div></div>`;
+  }).join('')}</div>`;
+}
+
+/* ----- tier test page ----- */
+const embedTest = (t, mine) => ({
+  title:'🎯 Tier test request', description:`**${esc2(t.name)}** wants a tier test.`, color:0x57B6FF,
+  fields:[
+    {name:'Gamemodes (current tier)', value:t.modes.map(m => `${modeIcon(m)} **${modeName(m)}**: \`${tierName(mine ? mine.tiers[m] : null)}\``).join('\n'), inline:false},
+    {name:'Preferred time', value:timeField(t.time), inline:true},
+    {name:'Discord', value:clip(esc2(t.discord),100), inline:true}
+  ].concat(t.about ? [{name:'Notes', value:clip(esc2(t.about),500), inline:false}] : []),
+  footer:{text:'HiveTiers'}, timestamp:new Date().toISOString()
+});
+function ttListHTML(){
+  if (!TT.length) return `<p class="muted" style="margin:0">No requests yet.</p>`;
+  return TT.map(t => `<div class="app"><div class="info"><b>${(t.modes||[]).map(m => modeIcon(m)+' '+esc(modeName(m))).join(' · ')}</b>
+      <small>${fmtDT(t.time)}</small></div>
+      <span class="status ${esc(t.status)}">${esc(t.status)}</span>
+      ${t.status==='pending' ? `<div class="acts" style="width:100%"><button class="btn sm danger" data-act="tt-cancel" data-id="${t.id}">Cancel request</button></div>` : ''}</div>`).join('');
+}
+function viewTierTest(){
+  if (!authReady) return `<div class="card empty"><b>Loading…</b></div>`;
+  if (!authUser || !profile) return `<div class="ph"><div><h1>Tier test</h1><p>Book a test with a tester to get ranked or move up.</p></div></div>
+    <div class="card empty"><b>Log in to book a tier test</b>You need an account so the testers know who you are.<br><br><button class="btn primary" data-act="open-me">Log in or sign up</button></div>`;
+  const sc = stateCard(); if (sc) return sc;
+  const mine = myPlayer();
+  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || 'your local time';
+  return `<div class="ph"><div><h1>Tier test</h1><p>Get ranked, or check if you deserve a higher tier. You do not challenge anyone here. A tester will play with you.</p></div></div>
+    <form class="card form" id="tt-form" novalidate>
+      <div><label class="l">Which gamemodes do you want to be tested in?</label>
+        <div class="picks">${MODES.map(m => `<label class="pick"><input type="checkbox" name="tt-mode" value="${m.id}"><span class="pn">${m.icon} ${m.name}</span><span class="pr"><small>Your tier</small>${badge(mine?mine.tiers[m.id]:null,30)}</span></label>`).join('')}</div></div>
+      <div><label class="l" for="tt-time">When can you play?</label><input class="field" id="tt-time" type="datetime-local" min="${localDT(Date.now())}" value="${localDT(Date.now()+864e5)}"><div class="hint">Your time zone: ${esc(tz)}. Testers see it in their own time.</div></div>
+      <div><label class="l" for="tt-dc">Your Discord username</label><input class="field" id="tt-dc" type="text" maxlength="40" autocomplete="off" value="${esc((priv&&priv.discord)||lsGet('hts_discord',''))}" placeholder="username"></div>
+      <div><label class="l" for="tt-about">Anything the tester should know? <span class="muted">(optional)</span></label><textarea class="field" id="tt-about" maxlength="300" rows="3" placeholder="Your playstyle, ping, the tier you think you deserve…"></textarea></div>
+      <div class="err" id="tt-err" role="alert"></div>
+      <button class="btn primary" type="submit">Request tier test</button>
+    </form>
+    <h2 style="font-size:18px;margin:24px 0 10px">Your requests</h2>
+    <div class="apps" id="ttlist">Loading…</div>`;
+}
+
+/* ============ ROUTER ============ */
+const app = $('#app');
+function render(){
+  TOKEN++; killViewer();
+  const token = TOKEN;
+  let [seg, ...rest] = location.hash.replace(/^#\/?/,'').split('/');
+  if (seg==='apply') seg = 'challenge';
+  const arg = decodeURIComponent(rest.join('/')||'');
+  const route = ['leaderboard','player','challenge','tiertest','profile'].includes(seg) ? seg : 'home';
+  let html, title = 'HiveTiers — Gameplay Rankings';
+  if (route==='home') html = viewHome();
+  else if (route==='leaderboard'){ html = viewLeaderboard(); title = 'Leaderboard · HiveTiers'; }
+  else if (route==='challenge'){ html = viewChallenge(arg); title = 'Challenge · HiveTiers'; }
+  else if (route==='tiertest'){ html = viewTierTest(); title = 'Tier test · HiveTiers'; }
+  else if (route==='profile'){ html = viewProfile(); title = 'Profile · HiveTiers'; }
+  else { html = viewPlayer(arg); title = arg+' · HiveTiers'; }
+  document.body.dataset.route = route;
+  document.title = title;
+  app.innerHTML = html;
+  $('#topsearch').innerHTML = route==='home' ? '' : searchBox('topq');
+  $$('[data-nav]').forEach(a => a.classList.toggle('on', a.dataset.nav===route));
+  $$('[data-search]').forEach(bindSearch);
+  if (route!=='leaderboard') window.scrollTo(0,0);
+
+  if (!loading && Date.now()-lastLoad > 90000 && (route==='home'||route==='leaderboard')) loadData().then(() => { if (token===TOKEN) rerenderKeepScroll(); });
+  if (route==='player' && !loading && !loadError){ const p = findPlayer(arg); if (p) mountSkin(p, token); }
+  if (route==='profile' && authUser && profile && !loading && !loadError) mountSkin({uid:authUser.uid}, token);
+  if (route==='tiertest' && authUser && profile && !loading && !loadError){
+    guard(loadTierTests).then(() => { if (token===TOKEN && $('#ttlist')) $('#ttlist').innerHTML = ttListHTML(); });
+  }
+  if (route==='challenge' && authUser && profile && !loading && !loadError){
+    if (CHTAB==='new'){ renderOppSelected(); }
+    else guard(loadChallenges).then(() => { if (token===TOKEN && $('#chbox')){ $('#chbox').innerHTML = chHTML(); updateTopbar(); } });
+    guard(loadChallenges).then(updateTopbar);
+  }
+}
+function rerenderKeepScroll(){ const y = window.scrollY; render(); window.scrollTo(0,y); }
+window.addEventListener('hashchange', render);
+
+/* ============ DIALOGS ============ */
+const dlg = $('#dlg');
+function openDlg(html){ dlg.innerHTML = html; if (!dlg.open) dlg.showModal(); }
+function closeDlg(){ if (dlg.open) dlg.close(); }
+dlg.addEventListener('click', e => { if (e.target===dlg) closeDlg(); });
+
+/* ============ SETTINGS DRAWER ============ */
+const drawer = $('#drawer'), scrim = $('#scrim');
+function openSettings(){
+  $('#dbody').innerHTML = `
+    <div><b>Accent colour</b><div class="swatches" style="margin-top:10px">${[['honey','#ffbf2f'],['ice','#4cc3ff'],['ember','#ff6b4a'],['mint','#3fdca0']].map(([k,c]) => `<button data-act="accent" data-v="${k}" style="--c:${c}" class="${S.accent===k?'on':''}" aria-label="${k}"></button>`).join('')}</div></div>
+    <div><b>Theme</b><div class="seg" style="margin-top:10px"><button data-act="theme" data-v="dark" class="${S.theme==='dark'?'on':''}">Dark</button><button data-act="theme" data-v="light" class="${S.theme==='light'?'on':''}">Light</button></div></div>
+    <hr class="hr">
+    <div class="srow"><div><b>Show player heads</b><small>Turn off to show letter avatars</small></div><label class="sw"><input type="checkbox" id="s-skins" ${S.skins?'checked':''}><span></span></label></div>
+    <div class="srow"><div><b>Compact rows</b><small>Fit more players on screen</small></div><label class="sw"><input type="checkbox" id="s-compact" ${S.compact?'checked':''}><span></span></label></div>
+    <div class="srow"><div><b>Animations</b><small>Turn off for a calmer page</small></div><label class="sw"><input type="checkbox" id="s-motion" ${S.motion?'checked':''}><span></span></label></div>
+    <hr class="hr">
+    <button class="btn danger" data-act="reset">Reset display settings</button>
+    <p class="muted" style="font-size:13px;margin:0">Shortcuts: <b>/</b> focuses search, <b>Esc</b> closes this panel.</p>`;
+  drawer.inert = false; drawer.classList.add('open'); scrim.classList.add('open');
+  setTimeout(() => $('.x', drawer).focus(), 60);
+}
+function closeDrawer(){ drawer.classList.remove('open'); scrim.classList.remove('open'); drawer.inert = true; }
+function applySettings(){
+  document.documentElement.dataset.theme = S.theme;
+  document.documentElement.dataset.accent = S.accent;
+  document.body.classList.toggle('compact', S.compact);
+  document.body.classList.toggle('nomotion', !S.motion);
+  lsSet('hts_settings', S);
+}
+function updateTopbar(){
+  const b = $('#pbtn'), n = awaitingMe(), me = $('#tab-me');
+  if (profile){
+    b.className = 'pbtn'; b.innerHTML = `${avatar(profile.ign,32)}<span class="who">${esc(profile.ign)}</span>${n?`<span class="dot">${n}</span>`:''}`;
+    me.innerHTML = `<span class="ti">${avatar(profile.ign,24)}</span>Profile${n?`<span class="dot tdot">${n}</span>`:''}`;
+  } else {
+    b.className = 'pbtn guest'; b.textContent = authUser ? 'Finish profile' : 'Log in';
+    me.innerHTML = `<span class="ti">👤</span>${authUser?'Finish':'Log in'}`;
+  }
+  $$('[data-tester]').forEach(a => a.hidden = !role);
+  $('#tab-challenge').dataset.count = n;
+}
+
+/* ============ AUTH ============ */
+onAuthStateChanged(auth, async u => {
+  authUser = u; profile = null; priv = null; role = null; CH = [];
+  if (u){
+    await guard(async () => {
+      const s = await getDoc(doc(db,'users',u.uid));
+      profile = s.exists() ? s.data() : null;
+      if (profile){
+        const p = await getDoc(doc(db,'private',u.uid));
+        priv = p.exists() ? p.data() : {discord:'',serverLink:''};
+      }
+    });
+    if (profile) guard(loadChallenges).then(updateTopbar);
+  }
+  authReady = true;
+  updateTopbar(); syncOverlays(); render();
+});
+
+/* ============ ACTIONS ============ */
+const chRef = id => doc(db,'challenges',id);
+const chById = id => CH.find(c => c.id===id);
+const refreshCH = async () => { await loadChallenges(); updateTopbar(); if ($('#chbox')) $('#chbox').innerHTML = chHTML(); };
+const playerByUid = uid => PLAYERS.find(p => p.uid===uid);
+
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-act]'); if (!el) return;
+  const v = el.dataset.v;
+  switch (el.dataset.act){
+    case 'open-me':
+      if (authUser && profile) location.hash = '#/profile';
+      else if (authUser) syncOverlays();
+      else { guest = false; lsSet('hts_guest', false); gateMode = 'login'; syncOverlays(); }
+      break;
+    case 'open-settings': openSettings(); break;
+    case 'close-drawer': closeDrawer(); break;
+    case 'dlg-close': closeDlg(); break;
+    case 'gate-login': gateMode = 'login'; syncOverlays(); break;
+    case 'gate-signup': gateMode = 'signup'; syncOverlays(); break;
+    case 'guest': guest = true; lsSet('hts_guest', true); syncOverlays(); break;
+    case 'google': guard(async () => { await signInWithPopup(auth, new GoogleAuthProvider()); guest = false; lsSet('hts_guest', false); }); break;
+    case 'ob-skip': submitOnboard(true); break;
+    case 'signout': guard(async () => { await signOut(auth); guest = false; lsSet('hts_guest', false); gateMode = 'login'; closeDrawer(); location.hash = '#/'; toast('Logged out'); }); break;
+    case 'accent': S.accent=v; applySettings(); openSettings(); break;
+    case 'theme': S.theme=v; applySettings(); openSettings(); break;
+    case 'reset': S = {theme:'dark',accent:'honey',skins:true,compact:false,motion:true}; applySettings(); openSettings(); rerenderKeepScroll(); toast('Settings reset'); break;
+    case 'reload': loading = true; render(); loadData().then(render); break;
+    case 'lbtab': LB.mode=v; if (v==='overall') LB.view='list'; render(); break;
+    case 'lbview': LB.view=v; render(); break;
+    case 'goto-lb': LB.mode=v; LB.view='list'; LB.q=''; if (location.hash.startsWith('#/leaderboard')) render(); else location.hash='#/leaderboard'; break;
+    case 'legend': openLegend(); break;
+    case 'copy-link':
+      (navigator.clipboard ? navigator.clipboard.writeText(location.href) : Promise.reject()).then(() => toast('Link copied'), () => toast('Copy the link from the address bar'));
+      break;
+
+    case 'save-skin': guard(async () => {
+      if (!PENDING_SKIN || !authUser || !profile) return;
+      el.disabled = true;
+      const b = writeBatch(db);
+      b.update(doc(db,'users',authUser.uid), {headData:PENDING_SKIN.head});
+      b.set(doc(db,'skins',authUser.uid), {data:PENDING_SKIN.skin, updatedAt:serverTimestamp()});
+      await b.commit();
+      SKINS[authUser.uid] = PENDING_SKIN.skin; profile.headData = PENDING_SKIN.head; PENDING_SKIN = null;
+      await loadData(); updateTopbar(); el.hidden = false; rerenderKeepScroll(); toast('Skin saved');
+    }).finally(() => { el.disabled = false; }); break;
+
+    case 'tt-cancel': guard(async () => {
+      await updateDoc(doc(db,'tierTests',el.dataset.id), {status:'cancelled'});
+      await loadTierTests(); if ($('#ttlist')) $('#ttlist').innerHTML = ttListHTML(); toast('Request cancelled');
+    }); break;
+    case 'chtab': CHTAB = v; render(); break;
+    case 'opp-pick': CHF.opp = el.dataset.uid; $('#opp-q').value = ''; $('#opp-results').hidden = true; renderOppSelected(); break;
+    case 'opp-clear': CHF.opp = null; renderOppSelected(); $('#opp-q').focus(); break;
+    case 'ch-refresh': guard(refreshCH); break;
+    case 'ch-set': guard(async () => {
+      const c = chById(el.dataset.id); if (!c) return;
+      await updateDoc(chRef(c.id), {status:v, awaiting:null}); await refreshCH(); toast('Challenge '+v);
+      if (v==='declined') notify(embedSimple('❌ Challenge declined', `**${esc2(c.toName)}** declined the challenge from **${esc2(c.fromName)}**.`, 0xFF6B6B));
+    }); break;
+    case 'ch-accept': openDlg(`<h2 style="font-size:22px">Accept challenge</h2><form id="acc-form" class="form" data-id="${el.dataset.id}" style="margin-top:14px">
+        <div><label class="l" for="ac-dc">Your Discord username</label><input class="field" id="ac-dc" type="text" maxlength="40" value="${esc((priv&&priv.discord)||lsGet('hts_discord',''))}" placeholder="username"><div class="hint">The other player will see it so you can arrange the match.</div></div>
+        <div class="err" id="ac-err" role="alert"></div>
+        <div class="bar" style="margin:0"><button class="btn primary" type="submit">Accept</button><button class="btn" type="button" data-act="dlg-close">Cancel</button></div></form>`); break;
+    case 'ch-counter': openDlg(`<h2 style="font-size:22px">Suggest a new time</h2><form id="cnt-form" class="form" data-id="${el.dataset.id}" style="margin-top:14px">
+        <div><label class="l" for="cn-time">New time <span class="muted">(your local time)</span></label><input class="field" id="cn-time" type="datetime-local" min="${localDT(Date.now())}" value="${localDT(Date.now()+864e5)}"></div>
+        <div class="err" id="cn-err" role="alert"></div>
+        <div class="bar" style="margin:0"><button class="btn primary" type="submit">Send</button><button class="btn" type="button" data-act="dlg-close">Cancel</button></div></form>`); break;
+  }
+});
+document.addEventListener('change', async e => {
+  const t = e.target;
+  if (t.id==='s-skins'){ S.skins=t.checked; applySettings(); rerenderKeepScroll(); updateTopbar(); }
+  else if (t.id==='s-compact'){ S.compact=t.checked; applySettings(); }
+  else if (t.id==='s-motion'){ S.motion=t.checked; applySettings(); }
+  else if (t.id==='lbregion'){ LB.region=t.value; render(); }
+  else if (t.id==='cmpsel'){ CMP=t.value; rerenderKeepScroll(); }
+  else if (t.name==='tt-mode'){ t.closest('.pick').classList.toggle('on', t.checked); }
+  else if (t.closest && t.closest('#mode-picks') && t.type==='checkbox'){
+    CHF.modes = $$('#mode-picks input:checked').map(i => i.value);
+    $$('#mode-picks .pick').forEach(l => l.classList.toggle('on', $('input', l).checked));
+  }
+  else if (t.id==='skinfile' && t.files[0]){
+    const errBox = $('#skin-err'); if (errBox) errBox.textContent = '';
+    try{
+      const r = await readSkin(t.files[0]);
+      PENDING_SKIN = r; previewSkin(r.skin);
+      const pn = $('#prevnote'); if (pn) pn.textContent = 'Preview of your skin';
+      const sn = $('#skinnote'); if (sn) sn.textContent = 'Preview. Save to use it.';
+      const sv = $('#saveskin'); if (sv) sv.hidden = false;
+    }catch(err){
+      PENDING_SKIN = null; if (errBox) errBox.textContent = err.message; else toast(err.message);
+      const sv = $('#saveskin'); if (sv) sv.hidden = true;
+    }
+    t.value = '';
+  }
+});
+document.addEventListener('input', e => {
+  if (e.target.id==='lbq'){ LB.q=e.target.value; $('#lbres').innerHTML = lbResults(); }
+  else if (e.target.id==='opp-q') renderOppResults();
+});
+document.addEventListener('submit', e => {
+  const f = e.target, id = f.id; if (!id) return;
+  e.preventDefault();
+  const setErr = (el,m) => { const x = $('#'+el); if (x) x.textContent = m; };
+
+  if (id==='login-form') guard(async () => {
+    const u = $('#g-user').value.trim(), p = $('#g-pass').value;
+    if (!NAME_RE.test(u)) return gerr('Enter your username (3 to 16 letters, numbers or underscores).');
+    if (!p) return gerr('Enter your password.');
+    await signInWithEmailAndPassword(auth, fakeEmail(u), p);
+    guest = false; lsSet('hts_guest', false);
+  }).catch(() => {});
+
+  else if (id==='signup-form') guard(async () => {
+    const u = $('#g-user').value.trim(), p = $('#g-pass').value, p2 = $('#g-pass2').value;
+    if (!NAME_RE.test(u)) return gerr('Username must be 3 to 16 letters, numbers or underscores.');
+    if (p.length < 6) return gerr('Password must be at least 6 characters.');
+    if (p !== p2) return gerr('The passwords do not match.');
+    const nm = await getDoc(doc(db,'names',u.toLowerCase()));
+    if (nm.exists()) return gerr('That username is already taken.');
+    PENDING_NAME = u;
+    await createUserWithEmailAndPassword(auth, fakeEmail(u), p);
+    guest = false; lsSet('hts_guest', false);
+  });
+
+  else if (id==='ob-form') submitOnboard(false);
+
+  else if (id==='profile-form') guard(async () => {
+    const dc = $('#pf-dc').value.trim(), srv = $('#pf-srv').value.trim(), yt = $('#pf-yt').value.trim(), reg = $('#pf-region').value;
+    if (yt && !validYT(yt)) return setErr('pf-err','The YouTube link must be a https://youtube.com or https://youtu.be address.');
+    if (srv && !validDC(srv)) return setErr('pf-err','The server link must start with https://discord.gg/ or https://discord.com/invite/');
+    setErr('pf-err','');
+    const uid = authUser.uid;
+    await updateDoc(doc(db,'users',uid), {region:reg, youtube:yt});
+    await setDoc(doc(db,'private',uid), {discord:dc, serverLink:srv});
+    profile.region = reg; profile.youtube = yt; priv = {discord:dc, serverLink:srv};
+    lsSet('hts_discord', dc);
+    await loadData(); toast('Details saved'); rerenderKeepScroll();
+  });
+
+  else if (id==='tt-form') guard(async () => {
+    const modes = $$('input[name=tt-mode]:checked', f).map(i => i.value);
+    const t = new Date($('#tt-time').value).getTime(), dc = $('#tt-dc').value.trim();
+    if (!modes.length) return setErr('tt-err','Pick at least one gamemode.');
+    if (!t || t < Date.now()) return setErr('tt-err','Pick a time in the future.');
+    if (!dc) return setErr('tt-err','Add your Discord username so the tester can reach you.');
+    if (TT.some(x => x.status==='pending' && x.modes.some(m => modes.includes(m)))) return setErr('tt-err','You already have a pending request for one of these gamemodes.');
+    setErr('tt-err','');
+    lsSet('hts_discord', dc);
+    const req = {uid:authUser.uid, name:profile.ign, modes, time:t, about:$('#tt-about').value.trim(), discord:dc, status:'pending', createdAt:Date.now()};
+    await addDoc(collection(db,'tierTests'), req);
+    const r = await notify(embedTest(req, myPlayer()), true);
+    toast(r==='fail' ? 'Request saved, but the Discord message failed to send.' : 'Tier test requested. A tester will contact you on Discord.');
+    render();
+  });
+
+  else if (id==='ch-form') guard(async () => {
+    const o = oppPlayer();
+    const t = new Date($('#c-time').value).getTime(), dc = $('#c-dc').value.trim();
+    if (!o) return setErr('c-err','Choose who you want to challenge.');
+    if (!CHF.modes.length) return setErr('c-err','Pick at least one gamemode.');
+    if (!t || t < Date.now()) return setErr('c-err','Pick a time in the future.');
+    if (!dc) return setErr('c-err','Add your Discord username so they can reach you.');
+    setErr('c-err','');
+    lsSet('hts_discord', dc);
+    const mine = myPlayer() || {uid:authUser.uid, name:profile.ign, tiers:{boxing:null,midfight:null,sky:null}};
+    const c = {fromUid:authUser.uid, toUid:o.uid, fromName:profile.ign, toName:o.name, modes:[...CHF.modes], time:t,
+      about:$('#c-about').value.trim(), fromDiscord:dc, toDiscord:'',
+      status:'pending', awaiting:o.uid, results:{}, createdAt:Date.now()};
+    await addDoc(collection(db,'challenges'), c);
+    const r = await notify(embedChallenge(c, mine, o), true);
+    CHF = {opp:null, modes:[]}; CHTAB = 'mine';
+    toast(r==='fail' ? 'Challenge saved, but the Discord message failed to send.' : 'Challenge sent to '+o.name);
+    render();
+  });
+
+  else if (id==='acc-form') guard(async () => {
+    const c = chById(f.dataset.id), dc = $('#ac-dc').value.trim(); if (!c) return;
+    if (!dc) return setErr('ac-err','Add your Discord username.');
+    lsSet('hts_discord', dc);
+    await updateDoc(chRef(c.id), {status:'accepted', awaiting:null, [c.toUid===authUser.uid?'toDiscord':'fromDiscord']:dc});
+    closeDlg(); await refreshCH(); toast('Challenge accepted');
+    const who = c.toUid===authUser.uid ? c.toName : c.fromName;
+    notify(embedSimple('✅ Challenge accepted', `**${esc2(who)}** accepted the challenge.\n**${esc2(c.fromName)}** vs **${esc2(c.toName)}**\n${timeField(c.time)}`, 0x4CD68A), true);
+  });
+
+  else if (id==='cnt-form') guard(async () => {
+    const c = chById(f.dataset.id); if (!c) return;
+    const t = new Date($('#cn-time').value).getTime();
+    if (!t || t < Date.now()) return setErr('cn-err','Pick a time in the future.');
+    await updateDoc(chRef(c.id), {time:t, status:'pending', awaiting:c.fromUid===authUser.uid?c.toUid:c.fromUid});
+    closeDlg(); await refreshCH(); toast('New time sent');
+  });
+
+});
+document.addEventListener('keydown', e => {
+  if (e.key==='Escape' && drawer.classList.contains('open') && !dlg.open) closeDrawer();
+  if (e.key==='/' && !/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName) && !e.metaKey && !e.ctrlKey){
+    const s = $('#homesearch') || $('#topq'); if (s){ e.preventDefault(); s.focus(); }
+  }
+});
+
+/* legend */
+function openLegend(){
+  const d = $('#legend');
+  d.innerHTML = `<h2 style="font-size:22px">How tiers work</h2>
+    <p class="muted">Every gamemode has 15 tiers: High tier (HT1 to HT5) is the top, then Mid tier (MT1 to MT5), then Low tier (LT1 to LT5). Number 1 is the best in each group. Points add up to your overall rank.</p>
+    <table><thead><tr><th>High tier</th><th>Mid tier</th><th>Low tier</th></tr></thead><tbody>
+    ${[1,2,3,4,5].map(n => `<tr>${['HT','MT','LT'].map(g => `<td>${badge(TIERS.indexOf(g+n),34)} <small class="muted">${PTS[g+n]} pts</small></td>`).join('')}</tr>`).join('')}</tbody></table>
+    <p class="muted" style="margin:0 0 14px">Titles by total points: ${[...TITLES].reverse().map(t => t[1]+' ('+t[0]+'+)').join(', ')}.</p>
+    <button class="btn primary" onclick="this.closest('dialog').close()">Got it</button>`;
+  d.showModal();
+}
+$('#legend').addEventListener('click', e => { if (e.target.id==='legend') e.target.close(); });
+
+/* ============ INIT ============ */
+applySettings();
+syncOverlays();
+updateTopbar();
+render();
+loadData().then(() => { render(); });
+
+</script>
+</body>
+</html>
