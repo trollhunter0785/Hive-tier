@@ -598,16 +598,17 @@ function searchBox(id, big){
 }
 
 /* ============ DISCORD ============ */
-const webhookOn = () => /^https:\/\/(canary\.|ptb\.)?discord(app)?\.com\/api\/webhooks\//.test(DISCORD_WEBHOOK);
+const isHook = u => /^https:\/\/(canary\.|ptb\.)?discord(app)?\.com\/api\/webhooks\//.test(u);
 async function notify(embed, ping){
-  if (!webhookOn()) return 'off';
-  try{
-    const body = {username:'HiveTiers', embeds:[embed], allowed_mentions:{parse:[], roles: REFEREE_ROLE_ID ? [REFEREE_ROLE_ID] : []}};
-    if (ping && REFEREE_ROLE_ID) body.content = `<@&${REFEREE_ROLE_ID}>`;
-    const r = await fetch(DISCORD_WEBHOOK, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)});
-    return r.ok ? 'ok' : 'fail';
-  }catch(e){ return 'fail'; }
-}
+  const hooks = DISCORD_WEBHOOKS.filter(h => isHook(h.url));
+  if (!hooks.length) return 'off';
+  const results = await Promise.all(hooks.map(h => {
+    const body = {username:'HiveTiers', embeds:[embed], allowed_mentions:{parse:[], roles: h.role ? [h.role] : []}};
+    if (ping && h.role) body.content = `<@&${h.role}>`;
+    return fetch(h.url, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)}).then(r => r.ok).catch(() => false);
+  }));
+  return results.every(Boolean) ? 'ok' : results.some(Boolean) ? 'partial' : 'fail';
+  }
 const clip = (s,n) => String(s||'').length>n ? String(s).slice(0,n-1)+'…' : String(s||'');
 function rankLines(a, b, modes){
   return modes.map(m => `${modeIcon(m)} **${modeName(m)}**: ${esc2(a.name)} \`${tierName(a.tiers[m])}\` vs ${esc2(b.name)} \`${tierName(b.tiers[m])}\``).join('\n');
